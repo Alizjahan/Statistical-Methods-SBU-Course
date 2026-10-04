@@ -1,0 +1,94 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={راهنمای استفاده از جزوه},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\setcounter{chapter}{0}
+\chapter*{راهنمای استفاده از جزوه}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\addcontentsline{toc}{chapter}{راهنمای استفاده از جزوه}
+این جزوه، بازنویسی محتوای آموزشی تمام ۴۵ صفحهٔ فایل ارسالی است. ترتیب چهار فصل اصلی حفظ شده، اما مرزبندی بخش‌ها برای پیوستگی مطالعه تنظیم شده است. تعریف‌ها، استدلال‌ها، مثال‌ها و روابط تکرارشونده به زبانی یکدست نوشته شده‌اند؛ حل مثال‌هایی که در دست‌نویس تنها صورت آن‌ها آمده، تکمیل شده است.
+
+همهٔ شکل‌ها از نو و به‌صورت برداری رسم شده‌اند. باکس‌های سرمه‌ای به تعریف‌ها، باکس‌های سبزآبی به نتایج اصلی، و باکس‌های طلایی به شرایط کاربرد و خطاهای متداول اختصاص دارند. یادداشت‌های «تکمیل یا اصلاح علمی» تغییرهای مؤثر نسبت به متن مبنا را توضیح می‌دهند.
+\begin{important}{قراردادهای ثابت در سراسر جزوه}
+پارامتر دوم $\N(\mu,\sigma^2)$ \textbf{واریانس} است. نماد $S^2$ همیشه واریانس نمونه با مخرج $n-1$ و $S$ انحراف معیار نمونه است. تمام چندک‌ها بر اساس \textbf{احتمال تجمعی از سمت چپ} تعریف می‌شوند:
+\[
+\Prob(Z\le z_p)=p,\quad
+\Prob(T_\nu\le t_{p,\nu})=p,\quad
+\Prob(Q_\nu\le\chi^2_{p,\nu})=p.
+\]
+در هر فرمول، فرض استقلال، نرمال بودن یا بزرگ بودن نمونه را پیش از استفاده بررسی کنید. علامت $\approx$ نشان‌دهندهٔ تقریب است و با برابری دقیق تفاوت دارد.
+\end{important}
+وقتی دادهٔ عددی یا عبارت دست‌نویس خوانش قطعی نداشته، خوانش انتخابی همراه با توضیح ذکر شده است. هیچ دادهٔ مبهمی بدون مشخص کردن فرض جایگزین نشده است. پیوست پایانی، نقشهٔ تطبیق با صفحات فایل مبنا و مهم‌ترین اصلاحات را در اختیار می‌گذارد.
+
+\end{document}
