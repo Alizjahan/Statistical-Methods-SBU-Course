@@ -1,0 +1,274 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={مقدمات احتمال و توزیع‌ها},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\setcounter{chapter}{0}
+\chapter{مقدمات احتمال و توزیع‌ها}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\source{۱ تا ۴}
+\section{آزمایش تصادفی، فضای نمونه و متغیر تصادفی}
+\begin{definition}{زبان احتمال}
+\textbf{آزمایش تصادفی} فرایندی است که نتیجهٔ دقیق اجرای آن پیش از انجام معلوم نیست، هرچند مجموعهٔ نتایج ممکن را می‌شناسیم.
+
+\textbf{فضای نمونه}، با نماد $\Omega$، مجموعهٔ تمام نتایج ممکن آزمایش است. هر زیرمجموعهٔ قابل اندازه‌گیری از آن یک \textbf{پیشامد} نام دارد.
+
+\textbf{متغیر تصادفی} تابعی حقیقی و قابل اندازه‌گیری روی فضای نمونه است:
+\[X:\Omega\longrightarrow\R.\]
+\end{definition}
+متغیر تصادفی گسسته، مقادیری در یک مجموعهٔ متناهی یا شمارا می‌گیرد. متغیر تصادفیِ دارای چگالی، مدلی برای کمیت‌هایی با مقادیر پیوسته است. در این جزوه، واژهٔ «پیوسته» در روابط چگالی به معنای \textbf{مطلقاً پیوسته} به کار می‌رود.
+\edit{هر متغیر تصادفیِ بدون جرم نقطه‌ای الزاماً چگالی ندارد. روابط انتگرالی زیر مخصوص توزیع‌های دارای چگالی است.}
+\section{تابع احتمال، چگالی و توزیع تجمعی}
+\subsection{حالت گسسته}
+تابع جرم احتمال $X$ به صورت
+\[p_X(x)=\Prob(X=x)\]
+تعریف می‌شود و باید شرایط زیر را داشته باشد:
+\[p_X(x)\ge0,\qquad\sum_{x\in\mathcal S_X}p_X(x)=1.\]
+در این رابطه $\mathcal S_X$ تکیه‌گاه $X$ است. تابع توزیع تجمعی، در همهٔ مدل‌ها، برابر است با
+\[F_X(x)=\Prob(X\le x).\]
+در حالت گسسته،
+\[F_X(x)=\sum_{t\le x}p_X(t).\]
+\subsection{حالت دارای چگالی}
+\begin{result}{احتمال از مساحت زیر چگالی به دست می‌آید}
+اگر $X$ چگالی $f_X$ داشته باشد،
+\[
+f_X(x)\ge0,\qquad\int_{-\infty}^{\infty}f_X(x)\,dx=1,
+\qquad F_X(x)=\int_{-\infty}^{x}f_X(t)\,dt.
+\]
+برای $a<b$،
+\[\Prob(a<X\le b)=F_X(b)-F_X(a)=\int_a^b f_X(x)\,dx.\]
+همچنین $\Prob(X=b)=0$؛ ازاین‌رو باز یا بسته بودن دو سر بازه در محاسبهٔ احتمال تفاوتی ایجاد نمی‌کند.
+\end{result}
+هرجا مشتق وجود داشته باشد، $f_X(x)=F'_X(x)$؛ این برابری تقریباً همه‌جا برقرار است. تابع توزیع تجمعی نزولی نیست، راست‌پیوسته است و حدود آن در $-\infty$ و $+\infty$ به‌ترتیب صفر و یک‌اند.
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[x=1.45cm,y=1.8cm]
+\fill[teal!20] plot[domain=-.7:1.5,samples=70] (\x,{exp(-\x*\x/2)})--(1.5,0)--(-.7,0)--cycle;
+\draw[navy,thick] plot[domain=-3.2:3.2,samples=100] (\x,{exp(-\x*\x/2)});
+\draw[-{Latex},muted] (-3.3,0)--(3.4,0) node[right] {$x$};
+\draw[gold,dashed] (-.7,0)--(-.7,{exp(-.49/2)}) (1.5,0)--(1.5,{exp(-2.25/2)});
+\node[below] at (-.7,0) {$a$};\node[below] at (1.5,0) {$b$};
+\node[teal] at (.3,.35) {$\Prob(a<X\le b)$};
+\end{tikzpicture}
+\end{LTR}
+\figcap{تعبیر هندسی احتمال در توزیع دارای چگالی؛ ارتفاع منحنی به‌تنهایی احتمال نیست.}
+\end{center}
+\section{توزیع مشترک و استقلال}
+برای دو متغیر گسسته،
+\[
+p_{X,Y}(x,y)=\Prob(X=x,Y=y),\qquad
+p_{X,Y}(x,y)\ge0,\qquad\sum_x\sum_y p_{X,Y}(x,y)=1.
+\]
+در حالت دارای چگالی مشترک،
+\[
+f_{X,Y}(x,y)\ge0,\qquad
+\int_{-\infty}^{\infty}\!\int_{-\infty}^{\infty}f_{X,Y}(x,y)\,dx\,dy=1.
+\]
+توزیع‌های حاشیه‌ای با جمع یا انتگرال گرفتن نسبت به متغیر دیگر به دست می‌آیند؛ برای مثال
+\[f_X(x)=\int_{-\infty}^{\infty}f_{X,Y}(x,y)\,dy.\]
+\begin{definition}{استقلال دو متغیر تصادفی}
+$X$ و $Y$ مستقل‌اند هرگاه برای تمام $x,y$،
+\[F_{X,Y}(x,y)=F_X(x)F_Y(y).\]
+در مدل گسسته، این شرط معادل $p_{X,Y}(x,y)=p_X(x)p_Y(y)$ است؛ در مدل دارای چگالی نیز $f_{X,Y}(x,y)=f_X(x)f_Y(y)$ تقریباً همه‌جا برقرار است.
+\end{definition}
+\section{امید ریاضی و خواص آن}
+با فرض وجود امید ریاضی،
+\[
+\E(X)=\mu_X=
+\begin{cases}
+\displaystyle\sum_x x\,p_X(x),&\text{گسسته،}\\[3pt]
+\displaystyle\int_{-\infty}^{\infty}x f_X(x)\,dx,&\text{دارای چگالی.}
+\end{cases}
+\]
+برای تابع $g$، بدون نیاز به یافتن توزیع $g(X)$،
+\[
+\E[g(X)]=
+\begin{cases}
+\displaystyle\sum_x g(x)p_X(x),\\[3pt]
+\displaystyle\int_{-\infty}^{\infty}g(x)f_X(x)\,dx.
+\end{cases}
+\]
+\begin{result}{خطی بودن امید ریاضی}
+برای ثابت‌های $a_i,b_i$ و متغیرهای با امید ریاضی متناهی،
+\[
+\E(a_iX_i+b_i)=a_i\E(X_i)+b_i,
+\qquad
+\E\left[\sum_{i=1}^n(a_iX_i+b_i)\right]
+=\sum_{i=1}^n[a_i\E(X_i)+b_i].
+\]
+برای این خاصیت، استقلال متغیرها لازم نیست.
+\end{result}
+\section{واریانس، انحراف معیار و کوواریانس}
+\begin{definition}{پراکندگی و تغییرات مشترک}
+اگر گشتاور دوم متناهی باشد،
+\[
+\Var(X)=\sigma_X^2=\E[(X-\mu_X)^2]
+=\E(X^2)-[\E(X)]^2,
+\qquad \sigma_X=\sqrt{\Var(X)}.
+\]
+کوواریانس دو متغیر برابر است با
+\begin{align*}
+\Cov(X,Y)&=\E[(X-\mu_X)(Y-\mu_Y)]\\
+&=\E(XY)-\E(X)\E(Y).
+\end{align*}
+\end{definition}
+استقلال، با فرض وجود گشتاورهای لازم، به $\Cov(X,Y)=0$ منجر می‌شود؛ عکس این گزاره در حالت کلی درست نیست.
+
+برای ثابت‌های $a,b,c,d$،
+\[
+\Var(X+b)=\Var(X),\qquad \Var(aX)=a^2\Var(X),
+\qquad \Cov(aX+b,cY+d)=ac\Cov(X,Y).
+\]
+\begin{result}{واریانس ترکیب خطی}
+\[
+\Var\left(\sum_{i=1}^na_iX_i\right)
+=\sum_{i=1}^na_i^2\Var(X_i)
++2\sum_{i<j}a_ia_j\Cov(X_i,X_j).
+\]
+اگر متغیرها دوبه‌دو ناهمبسته باشند، جملهٔ دوم صفر می‌شود. استقلال متقابل، شرط کافی برای این ساده‌سازی است.
+\end{result}
+\textbf{اثبات.} با قرار دادن $Y_i=X_i-\E(X_i)$ داریم
+\begin{align*}
+\Var\left(\sum_i a_iX_i\right)
+&=\E\left[\left(\sum_i a_iY_i\right)^2\right]\\
+&=\sum_i a_i^2\E(Y_i^2)+2\sum_{i<j}a_ia_j\E(Y_iY_j).
+\end{align*}
+این همان رابطهٔ بالا است. همچنین برای دو ترکیب خطی،
+\[
+\Cov\left(\sum_{i=1}^n a_iX_i,\sum_{j=1}^m b_jY_j\right)
+=\sum_{i=1}^n\sum_{j=1}^m a_ib_j\Cov(X_i,Y_j).
+\]
+\subsection{نتایج مهم برای میانگین نمونه}
+اگر $X_1,\ldots,X_n$ مستقل و هم‌توزیع با میانگین $\mu$ و واریانس $\sigma^2$ باشند،
+\[
+\bar X=\frac1n\sum_{i=1}^nX_i,\qquad
+\E(\bar X)=\mu,\qquad \Var(\bar X)=\frac{\sigma^2}{n}.
+\]
+برای هر $j$،
+\begin{align*}
+\Cov(X_j,\bar X)
+&=\frac1n\sum_{i=1}^n\Cov(X_j,X_i)
+=\frac1n\Var(X_j)=\frac{\sigma^2}{n}.
+\end{align*}
+پس یک مشاهده و میانگین نمونه مستقل نیستند، زیرا خود مشاهده در ساخت میانگین به کار رفته است.
+\section{توزیع‌های پرکاربرد}
+در این بخش، تابع احتمال یا چگالی در خارج از دامنهٔ ذکرشده صفر است و $q=1-p$.
+\subsection{توزیع‌های گسسته}
+\textbf{یکنواخت گسسته.} اگر $X$ روی $\{x_1,\ldots,x_N\}$ احتمال‌های برابر داشته باشد،
+\[
+p_X(x_j)=\frac1N,\qquad
+\E(X)=\frac1N\sum_{j=1}^N x_j,\qquad
+\Var(X)=\frac1N\sum_{j=1}^N(x_j-\mu)^2.
+\]
+\textbf{برنولی.} $X\sim\operatorname{Bern}(p)$، با $0\le p\le1$:
+\[
+p_X(x)=p^xq^{1-x},\quad x=0,1;\qquad
+\E(X)=p,\quad\Var(X)=pq.
+\]
+\textbf{دوجمله‌ای.} $X\sim\operatorname{Bin}(n,p)$:
+\[
+p_X(x)=\binom nx p^xq^{n-x},\quad x=0,\ldots,n;\qquad
+\E(X)=np,\quad\Var(X)=npq.
+\]
+\textbf{پواسون.} $X\sim\operatorname{Pois}(\lambda)$، با $\lambda>0$:
+\[
+p_X(x)=\frac{\lambda^x e^{-\lambda}}{x!},\quad x=0,1,\ldots;
+\qquad\E(X)=\Var(X)=\lambda.
+\]
+در دو مدل برنولی و دوجمله‌ای، نقاط مرزی $p=0,1$ مستقیماً از تعریف احتمال موفقیت تفسیر می‌شوند.
+\subsection{توزیع‌های دارای چگالی}
+\textbf{یکنواخت.} $X\sim U(a,b)$، با $a<b$:
+\[
+f_X(x)=\frac1{b-a},\quad a<x<b;\qquad
+\E(X)=\frac{a+b}{2},\quad\Var(X)=\frac{(b-a)^2}{12}.
+\]
+\textbf{نمایی با نرخ $\lambda>0$.}
+\[
+f_X(x)=\lambda e^{-\lambda x},\quad x>0;\qquad
+\E(X)=\frac1\lambda,\quad\Var(X)=\frac1{\lambda^2}.
+\]
+\textbf{گاما با شکل $\alpha>0$ و نرخ $\lambda>0$.}
+\[
+f_X(x)=\frac{\lambda^\alpha}{\Gamma(\alpha)}x^{\alpha-1}e^{-\lambda x},\quad x>0;
+\qquad\E(X)=\frac\alpha\lambda,\quad\Var(X)=\frac\alpha{\lambda^2}.
+\]
+تابع گاما با $\Gamma(\alpha)=\int_0^\infty t^{\alpha-1}e^{-t}\,dt$ تعریف می‌شود و
+\[
+\Gamma(\alpha+1)=\alpha\Gamma(\alpha),\qquad
+\chi^2_\nu\equiv\operatorname{Gamma}\left(\frac\nu2,\text{ نرخ }\frac12\right).
+\]
+\begin{important}{نرخ را با مقیاس اشتباه نگیرید}
+اگر گاما با مقیاس $\beta=1/\lambda$ نوشته شود، امید و واریانس آن به‌ترتیب $\alpha\beta$ و $\alpha\beta^2$ است. تمام فرمول‌های این جزوه با پارامتر \textbf{نرخ} نوشته شده‌اند.
+\end{important}
+
+\end{document}
