@@ -1,0 +1,232 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={برآورد نقطه‌ای و معیارهای کیفیت},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\setcounter{chapter}{1}
+\chapter{برآورد نقطه‌ای و معیارهای کیفیت}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\source{۵ تا ۸}
+\section{جامعه، نمونه، پارامتر و آماره}
+\begin{definition}{مفاهیم پایهٔ استنباط}
+\textbf{جامعهٔ آماری}: مجموعهٔ واحدهایی که می‌خواهیم دربارهٔ آن‌ها اطلاعات به دست آوریم.
+
+\textbf{نمونه}: بخشی از واحدهای جامعه. نمونه‌گیری تصادفی به هر واحد، طبق طرح مشخص، امکان انتخاب می‌دهد؛ برابر بودن احتمال انتخاب، ویژگی نمونه‌گیری تصادفی ساده است.
+
+\textbf{نمونهٔ تصادفی از یک توزیع}: متغیرهای $X_1,\ldots,X_n$ مستقل و هم‌توزیع‌اند؛ این فرض را با $\iid$ نشان می‌دهیم.
+
+\textbf{پارامتر}: ویژگی عددی ثابت اما معمولاً نامعلومِ توزیع جامعه؛ مانند $\mu$ یا $\sigma^2$. مجموعهٔ مقادیر مجاز آن، فضای پارامتر $\Theta$ است.
+
+\textbf{آماره}: تابعی از مشاهدات نمونه که به پارامتر نامعلوم وابسته نیست. آماره، پیش از مشاهدهٔ داده‌ها، متغیری تصادفی و دارای توزیع نمونه‌ای است.
+\end{definition}
+\textbf{برآوردگر} آماره‌ای مانند $T=T(X_1,\ldots,X_n)$ است که برای تخمین یک پارامتر به کار می‌رود. \textbf{برآورد} مقدار عددی $T(x_1,\ldots,x_n)$ پس از مشاهدهٔ داده‌هاست.
+\begin{example}{توزیع نمونه‌ای میانگین}
+جامعه‌ای شامل چهار مقدار $1,2,3,4$ داریم و با جایگذاری، دو مشاهده انتخاب می‌کنیم. هر زوج مرتب احتمال $1/16$ دارد. توزیع میانگین نمونه عبارت است از
+\begin{center}\small
+\begin{tabular}{c|ccccccc}
+\toprule
+$\bar x$&$1$&$1.5$&$2$&$2.5$&$3$&$3.5$&$4$\\
+\midrule
+$\Prob(\bar X=\bar x)$&$1/16$&$2/16$&$3/16$&$4/16$&$3/16$&$2/16$&$1/16$\\
+\bottomrule
+\end{tabular}\end{center}
+برای نمونه، میانگین $2$ از زوج‌های $(1,3),(2,2),(3,1)$ حاصل می‌شود. میانگین جامعه $2.5$ و واریانس آن $1.25$ است؛ بنابراین $\E(\bar X)=2.5$ و $\Var(\bar X)=1.25/2=0.625$.
+\end{example}
+\section{نااریبی و اریبی}
+\begin{definition}{برآوردگر نااریب}
+برآوردگر $T$ برای $\theta$ نااریب است اگر برای تمام $\theta\in\Theta$،
+\[\E_\theta(T)=\theta.\]
+اریبی آن برابر است با
+\[\Bias_\theta(T)=\E_\theta(T)-\theta.\]
+\end{definition}
+نااریبی به معنی برابری هر برآورد با پارامتر نیست؛ میانگین برآوردها در تکرار نمونه‌گیری برابر پارامتر است.
+\begin{example}{نااریبی میانگین نمونه}
+اگر $X_1,\ldots,X_n\iid\N(\theta,1)$، آنگاه
+\[\E_\theta(\bar X)=\frac1n\sum_i\E_\theta(X_i)=\theta.\]
+در واقع، این نتیجه برای هر نمونهٔ مستقل و هم‌توزیع با میانگین متناهی برقرار است و به نرمال بودن نیاز ندارد.
+\end{example}
+\begin{example}{چرا در واریانس نمونه بر $n-1$ تقسیم می‌کنیم؟}
+جامعه میانگین $\mu$ و واریانس متناهی $\sigma^2$ دارد. تعریف کنید
+\[\widehat\sigma_n^2=\frac1n\sum_{i=1}^n(X_i-\bar X)^2.\]
+از همانی
+\[\sum_i(X_i-\bar X)^2=\sum_i(X_i-\mu)^2-n(\bar X-\mu)^2\]
+و $\E[(\bar X-\mu)^2]=\sigma^2/n$ نتیجه می‌شود
+\[
+\E\left[\sum_i(X_i-\bar X)^2\right]=(n-1)\sigma^2.
+\]
+پس
+\[\E(\widehat\sigma_n^2)=\frac{n-1}{n}\sigma^2,\qquad
+\Bias(\widehat\sigma_n^2)=-\frac{\sigma^2}{n}.\]
+در مقابل، برای $n\ge2$،
+\[\boxed{S^2=\frac1{n-1}\sum_i(X_i-\bar X)^2,\qquad \E(S^2)=\sigma^2.}\]
+\end{example}
+\section{خطای میانگین مربعات و کارایی نسبی}
+\begin{result}{تجزیهٔ خطای میانگین مربعات}
+برای برآورد $\theta$،
+\[
+\MSE_\theta(T)=\E_\theta[(T-\theta)^2]
+=\Var_\theta(T)+[\Bias_\theta(T)]^2.
+\]
+در نتیجه، برای برآوردگر نااریب، $\MSE_\theta(T)=\Var_\theta(T)$ است.
+\end{result}
+\textbf{اثبات.} بنویسید $T-\theta=[T-\E(T)]+[\E(T)-\theta]$. پس از مجذور کردن و امید گرفتن، جملهٔ متقاطع به‌علت $\E[T-\E(T)]=0$ حذف می‌شود.
+
+در این جزوه، $T_1$ را در مقدار پارامتر مورد نظر کاراتر از $T_2$ می‌نامیم اگر $\MSE_\theta(T_1)<\MSE_\theta(T_2)$. کارایی نسبی به صورت
+\[
+e(T_1,T_2)=\frac{\MSE_\theta(T_2)}{\MSE_\theta(T_1)}
+\]
+تعریف می‌شود؛ مقدار بیشتر از یک به سود $T_1$ است. برای دو برآوردگر نااریب، می‌توان نسبت واریانس‌ها را جایگزین کرد.
+\begin{important}{مقایسه باید برای یک هدف مشترک باشد}
+برای مقایسهٔ دو برآوردگرِ اریب، نسبت واریانس‌ها کافی نیست. هر دو خطا باید نسبت به \textbf{همان پارامتر هدف} محاسبه شوند. اگر ترتیب برتری با $\theta$ تغییر کند، هیچ‌یک در کل فضای پارامتر برتری یکنواخت ندارد.
+\end{important}
+\subsection{دو مثال از برآوردگرهای اریب}
+\begin{example}{نمونهٔ دوجمله‌ای؛ خوانش حفظ‌شده از دست‌نویس}
+فرض کنید $X_i\iid\operatorname{Bin}(k,\theta)$ و هدف برآورد $m=k\theta$ است. در متن مبنا دو آمارهٔ
+\[A=\bar X,\qquad B=\frac{X_1-\bar X}{n}\]
+برای مقایسه آمده‌اند. با $v=k\theta(1-\theta)$ داریم
+\[
+\E(A)=m,\quad\Var(A)=v/n,\qquad
+\E(B)=0,\quad\Var(B)=\frac{v(n-1)}{n^3}.
+\]
+در محاسبهٔ واریانس $B$، کوواریانس $\Cov(X_1,\bar X)=v/n$ را لحاظ کرده‌ایم. بنابراین
+\[
+\MSE_m(A)=\frac vn,\qquad
+\MSE_m(B)=\frac{v(n-1)}{n^3}+m^2.
+\]
+برای $0<\theta<1$،
+\[
+e(A,B)=\frac{n-1}{n^2}+\frac{nk\theta}{1-\theta}.
+\]
+\edit{صورت آمارهٔ دوم در دست‌نویس نامعمول است؛ خوانش «تفاضل تقسیم بر $n$» حفظ شده است. این آماره برای $k\theta$ نااریب نیست و مقایسهٔ صرفِ واریانس‌ها درست نخواهد بود.}
+\end{example}
+\begin{example}{نمونهٔ پواسون}
+فرض کنید $X_i\iid\operatorname{Pois}(\theta)$ و $\theta>0$. دو برآوردگر $A=\bar X$ و $B=X_1+\bar X$ را برای $\theta$ مقایسه کنید.
+\sol
+\[
+\E(A)=\theta,\quad\Var(A)=\theta/n,\qquad
+\E(B)=2\theta,\quad\Bias_\theta(B)=\theta.
+\]
+به‌علت حضور $X_1$ در میانگین،
+\[
+\Var(B)=\theta+\frac\theta n+2\frac\theta n
+=\theta\left(1+\frac3n\right).
+\]
+پس
+\[
+e(A,B)=\frac{\theta(1+3/n)+\theta^2}{\theta/n}
+=n+3+n\theta>1.
+\]
+بنابراین $\bar X$ برای تمام $\theta>0$ کاراتر است.
+\end{example}
+\section{ترکیب خطی نااریب با کمترین واریانس}
+\begin{example}{ضرایب نااریبی در یک نمونه}
+اگر $X_i$ها میانگین $\mu$ داشته باشند، برای $T=\sum_i a_iX_i$ داریم
+\[\E(T)=\mu\sum_i a_i.\]
+پس برای نااریبی در تمام مقادیر $\mu$ لازم و کافی است $\sum_i a_i=1$. اگر علاوه بر آن، مشاهدات مستقل و واریانس‌های آن‌ها برابر $\sigma^2$ باشد،
+\[\Var(T)=\sigma^2\sum_i a_i^2\ge\frac{\sigma^2}{n},\]
+زیرا $\sum_i a_i^2\ge(\sum_i a_i)^2/n$. تساوی برای $a_i=1/n$ برقرار است؛ پس میانگین نمونه در این خانواده کمترین واریانس را دارد.
+\end{example}
+\begin{result}{وزن‌دهی معکوس واریانس}
+اگر $T_1,T_2$ مستقل و نااریب برای $\theta$، با واریانس‌های مثبت $v_1,v_2$ باشند، ترکیب بهینهٔ نااریب آن‌ها عبارت است از
+\[
+T^*=\frac{v_2}{v_1+v_2}T_1+\frac{v_1}{v_1+v_2}T_2,
+\qquad \Var(T^*)=\frac{v_1v_2}{v_1+v_2}.
+\]
+\end{result}
+\textbf{اثبات.} شرط نااریبی $a_1+a_2=1$ است. تابع $a_1^2v_1+(1-a_1)^2v_2$ در $a_1=v_2/(v_1+v_2)$ کمینه می‌شود. اگر مانند یادداشت حاشیه‌ای متن مبنا $v_2=3v_1$ باشد، وزن‌ها به‌ترتیب $3/4$ و $1/4$ هستند.
+\section{سازگاری}
+\begin{definition}{نزدیک شدن احتمالی به پارامتر}
+دنبالهٔ برآوردگرهای $T_n$ برای $\theta$ سازگار است اگر برای هر $\varepsilon>0$ و هر $\theta\in\Theta$،
+\[
+\Prob_\theta(|T_n-\theta|>\varepsilon)\longrightarrow0.
+\]
+این خاصیت را با $T_n\xrightarrow{P}\theta$ نشان می‌دهیم.
+\end{definition}
+با نامساوی مارکف روی $(T_n-\theta)^2$،
+\[
+\Prob_\theta(|T_n-\theta|>\varepsilon)
+\le\frac{\MSE_\theta(T_n)}{\varepsilon^2}.
+\]
+پس $\MSE_\theta(T_n)\to0$ شرط کافی سازگاری است. به‌ویژه، اگر $T_n$ نااریب باشد و $\Var_\theta(T_n)\to0$، سازگار است. به‌طور کلی نیز کافی است اریبی و واریانس هر دو به صفر میل کنند.
+\edit{میل کردن واریانس به صفر به‌تنهایی کافی نیست؛ مثلاً برآوردگر ثابت صفر برای پارامتر ناصفر، واریانس صفر دارد ولی سازگار نیست. شرط $\MSE\to0$ کافی است و ضرورت ندارد.}
+\begin{example}{سازگاری میانگین}
+اگر $X_i\iid\N(\theta,1)$، آنگاه $\MSE_\theta(\bar X_n)=1/n\to0$. بنابراین $\bar X_n\xrightarrow{P}\theta$.
+
+همین استدلال برای $X_i\iid\operatorname{Pois}(\theta)$ با $\MSE=\theta/n$ و برای $X_i\iid\operatorname{Bin}(k,\theta)$، به‌منظور برآورد $\theta$ با $\bar X_n/k$، با $\MSE=\theta(1-\theta)/(nk)$ برقرار است.
+\end{example}
+\begin{important}{تمرین‌های ارجاع‌شده در متن مبنا}
+در پایان این بخش، مثال‌های صفحه‌های ۱۰۵ تا ۱۱۲ و تمرین‌های صفحهٔ ۱۵۳، سؤال‌های ۱ تا ۵ کتاب معرفی شده‌اند. چون نام و متن کتاب در فایل موجود نیست، این ارجاع حفظ شده است و صورت سؤال‌های کتاب بازسازی نشده است.
+\end{important}
+
+
+\end{document}
