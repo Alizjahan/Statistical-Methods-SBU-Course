@@ -1,0 +1,508 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={فاصله‌های اطمینان},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\setcounter{chapter}{2}
+\chapter{فاصله‌های اطمینان}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\source{۹ تا ۲۶}
+\section{منطق فاصلهٔ اطمینان و کمیت محوری}
+\begin{definition}{فاصلهٔ اطمینان}
+فرض کنید داده‌ها از توزیعی با پارامتر ثابت و نامعلوم $\theta$ آمده‌اند. بازهٔ تصادفی $[L(X),U(X)]$ فاصلهٔ اطمینان با سطح $1-\alpha$ است اگر
+\[\Prob_\theta\{L(X)\le\theta\le U(X)\}=1-\alpha.\]
+در کاربردهای تقریبی، این احتمال تقریباً برابر $1-\alpha$ است. در برخی روش‌های محافظه‌کارانه نیز پوشش حداقل برابر این سطح است.
+\end{definition}
+پیش از نمونه‌گیری، دو کران تصادفی‌اند و پارامتر ثابت است. پس از مشاهدهٔ داده‌ها، بازهٔ عددی مشخص می‌شود. تعبیر تکرارپذیرِ اطمینان ۹۵ درصد این است که در تکرار نمونه‌گیری، تقریباً ۹۵ درصد بازه‌های ساخته‌شده پارامتر را می‌پوشانند.
+\begin{important}{تعبیر احتمالی درست}
+در استنباط فراوانی‌گرا، به پارامتر ثابت احتمال تصادفی نسبت نمی‌دهیم. عبارت «با اطمینان ۹۵ درصد، پارامتر در این بازه است» به پوشش روش ساخت بازه اشاره دارد؛ این عبارت، احتمال پسینِ پارامتر نیست.
+\end{important}
+\begin{definition}{کمیت محوری و چندک}
+کمیت محوری تابعی مانند $Q=h(X_1,\ldots,X_n;\theta)$ است که توزیع آن به هیچ پارامتر نامعلوم وابسته نیست. خود $Q$ می‌تواند شامل پارامتر نامعلوم باشد و به همین دلیل الزاماً آماره نیست.
+
+چندک $p$ برای توزیع پیوستهٔ $Q$، عدد $q_p$ است که $\Prob(Q\le q_p)=p$.
+\end{definition}
+برای ساخت فاصله، ابتدا
+\[\Prob(q_{\alpha/2}\le Q\le q_{1-\alpha/2})=1-\alpha\]
+را می‌نویسیم، سپس نامساوی را نسبت به $\theta$ حل می‌کنیم. جهت نامساوی‌ها هنگام معکوس‌کردن مقادیر مثبت اهمیت دارد.
+\section{میانگین یک جامعهٔ نرمال؛ واریانس معلوم}
+\source{۹ تا ۱۱}
+اگر $X_1,\ldots,X_n\iid\N(\mu,\sigma^2)$ و $\sigma$ معلوم باشد، چون هر ترکیب خطی از متغیرهای \textbf{مشترکاً نرمال}، نرمال است،
+\[
+\bar X\sim\N\left(\mu,\frac{\sigma^2}{n}\right),\qquad
+Z=\frac{\bar X-\mu}{\sigma/\sqrt n}\sim\N(0,1).
+\]
+استقلال متغیرهای نرمال در این مسئله، نرمال مشترک بودن را تضمین می‌کند. از تقارن $z_{\alpha/2}=-z_{1-\alpha/2}$،
+\begin{align*}
+1-\alpha
+&=\Prob\left(-z_{1-\alpha/2}\le\frac{\bar X-\mu}{\sigma/\sqrt n}\le z_{1-\alpha/2}\right)\\
+&=\Prob\left(\bar X-z_{1-\alpha/2}\frac\sigma{\sqrt n}
+\le\mu\le\bar X+z_{1-\alpha/2}\frac\sigma{\sqrt n}\right).
+\end{align*}
+\begin{result}{فاصلهٔ اطمینان دقیق برای میانگین؛ $\sigma$ معلوم}
+\[
+\boxed{\bar x\ \pm\ z_{1-\alpha/2}\frac\sigma{\sqrt n}.}
+\]
+در این نمادگذاری، $c\pm d$ به معنی بازهٔ $[c-d,c+d]$ است. طول بازه برابر $2z_{1-\alpha/2}\sigma/\sqrt n$ خواهد بود.
+\end{result}
+\begin{example}{نمونهٔ نرمال با واریانس ۲۵}
+برای $n=16$، $\bar x=35$ و $\sigma^2=25$، فاصلهٔ اطمینان ۹۵ درصد برای $\mu$ برابر است با
+\[
+35\pm1.95996\frac5{\sqrt{16}}
+=35\pm2.44995
+=\boxed{[32.550,\ 37.450]}.
+\]
+\end{example}
+\subsection{چندک‌های رایج و طول فاصله}
+\begin{center}
+\begin{tabular}{c|ccc}
+\toprule
+سطح اطمینان&$90\%$&$95\%$&$99\%$\\
+\midrule
+$z_{1-\alpha/2}$&$1.64485$&$1.95996$&$2.57583$\\
+\bottomrule
+\end{tabular}
+\end{center}
+با ثابت بودن $n$ و $\sigma$، افزایش سطح اطمینان بازه را بلندتر می‌کند؛ با ثابت بودن سطح اطمینان، افزایش حجم نمونه بازه را کوتاه‌تر می‌کند.
+
+می‌توان به‌جای دو دُم برابر، $a<b$ را چنان انتخاب کرد که $\Prob(a<Z<b)=1-\alpha$. در این صورت بازهٔ میانگین برابر است با
+\[\left[\bar x-b\frac\sigma{\sqrt n},\ \bar x-a\frac\sigma{\sqrt n}\right].\]
+برای چگالی نرمال متقارن و تک‌قله‌ای، بازهٔ مرکزی با دو دُم برابر کوتاه‌ترین بازه را در میان این بازه‌های با ضرایب ثابت و پوشش یکسان دارد.
+\section{توزیع‌های نمونه‌ای کای‌دو و استیودنت}
+\source{۱۲ و ۱۳}
+اگر $Z_1,\ldots,Z_\nu$ \textbf{مستقل} و هر یک $\N(0,1)$ باشند،
+\[Q=\sum_{i=1}^{\nu}Z_i^2\sim\chi^2_\nu.\]
+به‌ویژه $Z_i^2\sim\chi^2_1$. اگر $Z\sim\N(0,1)$ و $Q\sim\chi^2_\nu$ مستقل باشند،
+\[T=\frac{Z}{\sqrt{Q/\nu}}\sim t_\nu.\]
+توزیع $t$ نسبت به صفر متقارن و دارای دُم‌های سنگین‌تر از نرمال استاندارد است؛ با افزایش درجات آزادی به نرمال استاندارد نزدیک می‌شود.
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[x=1.35cm,y=5cm]
+\draw[muted,-{Latex}] (-3.9,0)--(4,0) node[right] {$x$};
+\draw[navy,thick] plot[domain=-3.8:3.8,samples=120] (\x,{exp(-\x*\x/2)/sqrt(2*pi)});
+\draw[teal,thick,dashed] plot[domain=-3.8:3.8,samples=120] (\x,{2/(sqrt(3)*pi)*(1+\x*\x/3)^(-2)});
+\draw[navy,thick] (1.8,.39)--(2.35,.39) node[right] {$\N(0,1)$};
+\draw[teal,thick,dashed] (1.8,.32)--(2.35,.32) node[right] {$t_3$};
+\end{tikzpicture}
+\end{LTR}
+\figcap{مقایسهٔ نرمال استاندارد و استیودنت با سه درجهٔ آزادی؛ سنگینی دُم‌ها در نمونهٔ کوچک مهم است.}
+\end{center}
+\subsection{نتیجهٔ بنیادی برای نمونهٔ نرمال}
+برای نمونهٔ مستقل و هم‌توزیع نرمال،
+\[
+\frac{(n-1)S^2}{\sigma^2}\sim\chi^2_{n-1},
+\qquad \bar X\ \text{و}\ S^2\ \text{مستقل‌اند}.
+\]
+ازاین‌رو
+\[
+\frac{\bar X-\mu}{S/\sqrt n}
+=\frac{(\bar X-\mu)/(\sigma/\sqrt n)}
+{\sqrt{[(n-1)S^2/\sigma^2]/(n-1)}}
+\sim t_{n-1}.
+\]
+\textbf{چرایی درجات آزادی.} همانی مجموع مربعات می‌دهد
+\[
+\frac{\sum_i(X_i-\mu)^2}{\sigma^2}
+=\frac{\sum_i(X_i-\bar X)^2}{\sigma^2}
++\frac{n(\bar X-\mu)^2}{\sigma^2}.
+\]
+در مدل نرمال، مؤلفهٔ میانگین یک بُعد و باقیمانده‌ها $n-1$ بُعد متعامد دارند. یک تبدیل متعامد از بردار نرمال استاندارد، مؤلفه‌های مستقل نرمال استاندارد تولید می‌کند؛ پس مجموع مربعات باقیمانده‌ها کای‌دو با $n-1$ درجهٔ آزادی است و از میانگین استقلال دارد.
+\edit{صرفِ کم کردن یک متغیر کای‌دو از متغیر کای‌دوی دیگر، توزیع تفاضل را تعیین نمی‌کند. استقلال و تجزیهٔ متعامد نرمال لازم است. همچنین درجهٔ آزادی آمارهٔ $t$ در اینجا $n-1$ است، نه $n$.}
+\section{میانگین یک جامعهٔ نرمال؛ واریانس نامعلوم}
+\begin{result}{فاصلهٔ اطمینان دقیق استیودنت}
+برای $X_i\iid\N(\mu,\sigma^2)$، $n\ge2$ و $\sigma$ نامعلوم،
+\[
+\boxed{\bar x\ \pm\ t_{1-\alpha/2,n-1}\frac{s}{\sqrt n}.}
+\]
+این فرمول از حل نامساوی $-t_{1-\alpha/2,n-1}\le(\bar X-\mu)/(S/\sqrt n)\le t_{1-\alpha/2,n-1}$ به دست می‌آید.
+\end{result}
+\begin{example}{سرعت پنج خودرو}
+سرعت پنج خودرو از جامعه‌ای نرمال اندازه‌گیری شده است؛ میانگین نمونه $80$ و انحراف معیار نمونه $6$ کیلومتر بر ساعت است. چون $n=5$ و $t_{0.975,4}=2.77645$، فاصلهٔ اطمینان ۹۵ درصد میانگین سرعت برابر است با
+\[
+80\pm2.77645\frac6{\sqrt5}
+=\boxed{[72.550,\ 87.450]}.
+\]
+\end{example}
+\section{حد خطا و تعیین حجم نمونه}
+\source{۱۴}
+نیم‌طول بازه را حد خطا یا حاشیهٔ خطا می‌نامیم. در حالت واریانس معلوم،
+\[E=z_{1-\alpha/2}\frac\sigma{\sqrt n}.\]
+رویداد $|\bar X-\mu|\le E$ احتمال $1-\alpha$ دارد؛ این کران، تضمین قطعی خطای مشاهده‌شده نیست.
+\begin{result}{حجم نمونه برای حاشیهٔ خطای حداکثر $e$}
+\[
+E\le e\quad\Longleftrightarrow\quad
+n\ge\left(\frac{z_{1-\alpha/2}\sigma}{e}\right)^2.
+\]
+حداقل حجم نمونه، کوچک‌ترین عدد صحیحِ بزرگ‌تر یا مساوی سمت راست است.
+\end{result}
+اگر $\sigma$ نامعلوم باشد، در مرحلهٔ برنامه‌ریزی از یک برآورد مقدماتی یا مطالعهٔ پیشین استفاده می‌کنیم. رابطهٔ $t_{1-\alpha/2,n-1}s/\sqrt n\le e$ به $n$ وابستگی ضمنی دارد و معمولاً به‌صورت تکراری حل می‌شود؛ نمی‌توان $s$ آینده را پیش از نمونه‌گیری دانست.
+\begin{example}{حجم نمونه با انحراف معیار ۴۰}
+اگر $\sigma=40$، سطح اطمینان ۹۵ درصد و حد خطای مطلوب $10$ باشد،
+\[
+n\ge\left(\frac{1.95996\times40}{10}\right)^2=61.4654\ldots
+\quad\Longrightarrow\quad\boxed{n_{\min}=62}.
+\]
+\edit{در متن مبنا محاسبهٔ عددی ناتمام و مقدار میانی کم‌دقت بود؛ حجم نمونه باید رو به بالا گرد شود.}
+\end{example}
+\section{قضیهٔ حد مرکزی و فاصله‌های تقریبی}
+\source{۱۵}
+\begin{result}{قضیهٔ حد مرکزی برای نمونهٔ مستقل و هم‌توزیع}
+اگر $\E(X_i)=\mu$ و $0<\Var(X_i)=\sigma^2<\infty$،
+\[
+\frac{\sqrt n(\bar X_n-\mu)}\sigma\xrightarrow{d}\N(0,1).
+\]
+در نتیجه برای هر $a\in\R$،
+\[
+\Prob\left(\frac{\bar X_n-\mu}{\sigma/\sqrt n}\le a\right)\to\Phi(a).
+\]
+\end{result}
+برای نمونهٔ کافی بزرگ، $\bar X_n\approx\N(\mu,\sigma^2/n)$. اگر $S^2$ برآوردگر سازگار واریانس باشد، جایگزینی $\sigma$ با $S$ نیز به تقریب نرمال می‌انجامد. سرعت مناسب شدن تقریب به شکل توزیع، چولگی و دُم‌ها بستگی دارد؛ یک آستانهٔ ثابت برای همهٔ جوامع وجود ندارد.
+\section{اختلاف میانگین دو جامعهٔ مستقل}
+\source{۱۵ تا ۱۸}
+دو نمونهٔ مستقل از هم در نظر بگیرید:
+\[
+X_{1i}\iid\N(\mu_1,\sigma_1^2),\quad i=1,\ldots,n_1,
+\qquad X_{2j}\iid\N(\mu_2,\sigma_2^2),\quad j=1,\ldots,n_2.
+\]
+هدف، برآورد $\Delta=\mu_1-\mu_2$ است و
+\[
+\bar X_1-\bar X_2\sim\N\left(\Delta,\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}\right).
+\]
+\subsection{واریانس‌های معلوم}
+\begin{result}{فاصلهٔ اطمینان اختلاف میانگین؛ حالت معلوم}
+\[
+\boxed{(\bar x_1-\bar x_2)\ \pm\ z_{1-\alpha/2}
+\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}.}
+\]
+کمیت محوری برابر است با تفاضلِ برآورد و پارامتر، تقسیم بر خطای استاندارد بالا؛ توزیع آن نرمال استاندارد است.
+\end{result}
+\begin{example}{مقایسهٔ میانگین نمرهٔ دو گروه}
+دو گروه مستقل با $n_1=10,n_2=12$ و میانگین‌های $\bar x_1=14,\bar x_2=12$ داریم. با فرض واریانس‌های معلوم $\sigma_1^2=40,\sigma_2^2=60$، فاصلهٔ اطمینان ۹۰ درصد برای $\mu_1-\mu_2$ برابر است با
+\[
+2\pm1.64485\sqrt{40/10+60/12}
+=2\pm4.93456=\boxed{[-2.935,\ 6.935]}.
+\]
+\edit{رقم واریانس دوم در صفحهٔ ۱۶ کم‌خواناست؛ در حل بالا «۶۰» در نظر گرفته شده است. اگر خوانش درست «۹۰» باشد، همان فرمول بازهٔ $[-3.578,\ 7.578]$ را می‌دهد.}
+\end{example}
+\subsection{واریانس‌های نامعلوم ولی برابر}
+فرض کنید $\sigma_1^2=\sigma_2^2=\sigma^2$. برآوردگر تجمیعی واریانس برابر است با
+\[
+S_p^2=\frac{(n_1-1)S_1^2+(n_2-1)S_2^2}{n_1+n_2-2}.
+\]
+زیرا امید صورت برابر $(n_1+n_2-2)\sigma^2$ است، $\E(S_p^2)=\sigma^2$. همچنین از استقلال دو نمونه و جمع‌پذیری کای‌دوهای مستقل،
+\[
+\frac{(n_1+n_2-2)S_p^2}{\sigma^2}\sim\chi^2_{n_1+n_2-2}.
+\]
+این کمیت از اختلاف میانگین‌ها مستقل است. بنابراین
+\[
+T=\frac{(\bar X_1-\bar X_2)-\Delta}
+{S_p\sqrt{1/n_1+1/n_2}}\sim t_{n_1+n_2-2}.
+\]
+\begin{result}{فاصلهٔ اطمینان تجمیعی}
+\[
+\boxed{(\bar x_1-\bar x_2)\ \pm\ t_{1-\alpha/2,n_1+n_2-2}
+s_p\sqrt{\frac1{n_1}+\frac1{n_2}}.}
+\]
+فرض برابری واریانس‌ها بخشی از مدل این روش است.
+\end{result}
+\subsection{واریانس‌های نامعلوم و نامساوی؛ روش ولچ}
+وقتی برابری واریانس‌ها را فرض نمی‌کنیم،
+\[
+T_W=\frac{(\bar X_1-\bar X_2)-\Delta}
+{\sqrt{S_1^2/n_1+S_2^2/n_2}}
+\approx t_\nu,
+\]
+که درجهٔ آزادی تقریبی ساترویت بر اساس داده‌ها برابر است با
+\[
+\nu=\frac{(s_1^2/n_1+s_2^2/n_2)^2}
+{\dfrac{(s_1^2/n_1)^2}{n_1-1}+\dfrac{(s_2^2/n_2)^2}{n_2-1}}.
+\]
+\begin{result}{فاصلهٔ اطمینان تقریبی ولچ}
+\[
+\boxed{(\bar x_1-\bar x_2)\ \pm\ t_{1-\alpha/2,\nu}
+\sqrt{\frac{s_1^2}{n_1}+\frac{s_2^2}{n_2}}.}
+\]
+$\nu$ می‌تواند غیرصحیح باشد. اگر جدول فقط درجات آزادی صحیح داشته باشد، گرد کردن رو به پایین معمولاً انتخاب محافظه‌کارانه‌تری است.
+\end{result}
+\edit{در دست‌نویس، توزیع ولچ گاه با علامت برابریِ توزیعی نوشته شده است؛ در این روش رابطه، تقریبی است.}
+\section{فاصلهٔ اطمینان واریانس جامعهٔ نرمال}
+\source{۱۹ و ۲۰}
+\subsection{میانگین معلوم}
+اگر $\mu$ معلوم باشد،
+\[
+Q=\frac{\sum_{i=1}^n(X_i-\mu)^2}{\sigma^2}\sim\chi^2_n.
+\]
+قرار دهید $A=\sum_i(x_i-\mu)^2$. از
+\[\chi^2_{\alpha/2,n}\le A/\sigma^2\le\chi^2_{1-\alpha/2,n}\]
+با معکوس‌کردن و حل نسبت به $\sigma^2$ به دست می‌آید
+\[
+\boxed{\left[\frac{A}{\chi^2_{1-\alpha/2,n}},\
+\frac{A}{\chi^2_{\alpha/2,n}}\right].}
+\]
+\subsection{میانگین نامعلوم}
+در این حالت، $A=(n-1)s^2$ و درجهٔ آزادی $n-1$ است:
+\begin{result}{فاصلهٔ اطمینان دقیق واریانس؛ میانگین نامعلوم}
+\[
+\boxed{\left[\frac{(n-1)s^2}{\chi^2_{1-\alpha/2,n-1}},\
+\frac{(n-1)s^2}{\chi^2_{\alpha/2,n-1}}\right].}
+\]
+برای فاصلهٔ اطمینان $\sigma$، از دو کران مثبت ریشهٔ دوم می‌گیریم.
+\end{result}
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[x=.57cm,y=12cm]
+\fill[teal!17] plot[domain=1.635:12.592,samples=100] (\x,{\x*\x*exp(-\x/2)/16})--(12.592,0)--(1.635,0)--cycle;
+\draw[navy,thick] plot[domain=.01:19,samples=140] (\x,{\x*\x*exp(-\x/2)/16});
+\draw[muted,-{Latex}] (0,0)--(19.5,0) node[right] {$q$};
+\draw[gold,dashed] (1.635,0)--(1.635,{1.635^2*exp(-1.635/2)/16});
+\draw[gold,dashed] (12.592,0)--(12.592,{12.592^2*exp(-12.592/2)/16});
+\node[below] at (1.635,0) {$\chi^2_{\alpha/2,\nu}$};
+\node[below] at (12.592,0) {$\chi^2_{1-\alpha/2,\nu}$};
+\node[teal] at (6.4,.055) {$1-\alpha$};
+\end{tikzpicture}
+\end{LTR}
+\figcap{بازهٔ مرکزی زیر چگالی کای‌دو؛ شکل برای $\nu=6$ و $\alpha=0.10$ رسم شده است. فاصلهٔ واریانس معمولاً متقارن نیست.}
+\end{center}
+\begin{example}{نمونهٔ ده‌تایی با واریانس ۵}
+از جامعهٔ نرمال، نمونه‌ای با $n=10$ و $s^2=5$ گرفته‌ایم. برای اطمینان ۹۰ درصد،
+\[
+\chi^2_{0.95,9}\approx16.91898,\qquad
+\chi^2_{0.05,9}\approx3.32511.
+\]
+بنابراین
+\[
+\left[\frac{45}{16.91898},\frac{45}{3.32511}\right]
+=\boxed{[2.660,\ 13.533]}.
+\]
+\end{example}
+\section{نسبت واریانس دو جامعهٔ نرمال}
+\source{۲۰ تا ۲۲}
+\begin{definition}{توزیع $F$}
+اگر $U\sim\chi^2_{\nu_1}$ و $V\sim\chi^2_{\nu_2}$ مستقل باشند،
+\[
+F=\frac{U/\nu_1}{V/\nu_2}\sim F_{\nu_1,\nu_2}.
+\]
+ترتیب دو درجهٔ آزادی مهم است: اولی به صورت و دومی به مخرج مربوط می‌شود.
+\end{definition}
+اگر $F\sim F_{\nu_1,\nu_2}$، آنگاه $1/F\sim F_{\nu_2,\nu_1}$ و
+\[
+\boxed{\frac1{F_{p;\nu_1,\nu_2}}=F_{1-p;\nu_2,\nu_1}.}
+\]
+\textbf{اثبات چندک معکوس.} چون تبدیل معکوس نزولی و توزیع پیوسته است،
+\[
+\Prob\left(\frac1F\le\frac1{F_{p;\nu_1,\nu_2}}\right)
+=\Prob(F\ge F_{p;\nu_1,\nu_2})=1-p.
+\]
+\subsection{یک فرمول مشترک برای هر دو حالت میانگین}
+برای دو نمونهٔ مستقل نرمال تعریف کنید
+\[
+R_j=\begin{cases}
+\displaystyle\frac1{n_j}\sum_i(X_{ji}-\mu_j)^2,&\mu_j\text{ معلوم،}\quad\nu_j=n_j,\\[4pt]
+S_j^2,&\mu_j\text{ نامعلوم،}\quad\nu_j=n_j-1.
+\end{cases}
+\]
+در هر دو حالت، برای $\rho=\sigma_1^2/\sigma_2^2$،
+\[Q=\frac{R_1/R_2}{\rho}\sim F_{\nu_1,\nu_2}.\]
+\begin{result}{فاصلهٔ اطمینان نسبت واریانس‌ها}
+با $r_j$ به‌عنوان مقدار مشاهده‌شدهٔ $R_j$،
+\[
+\boxed{\left[\frac{r_1/r_2}{F_{1-\alpha/2;\nu_1,\nu_2}},\
+\frac{r_1/r_2}{F_{\alpha/2;\nu_1,\nu_2}}\right].}
+\]
+فرم معادل با چندک‌های درجات آزادی معکوس عبارت است از
+\[
+\left[\frac{r_1}{r_2}F_{\alpha/2;\nu_2,\nu_1},\
+\frac{r_1}{r_2}F_{1-\alpha/2;\nu_2,\nu_1}\right].
+\]
+\end{result}
+اگر فاصله شامل $1$ باشد، آزمون دوطرفهٔ متناظر برابری واریانس‌ها را رد نمی‌کند؛ این نتیجه اثبات برابری نیست.
+\begin{example}{دو نمونه با واریانس‌های ۸ و ۱۶}
+در صفحهٔ ۲۲، نمونهٔ اول $n_1=10,\bar x_1=10,s_1^2=8$ و نمونهٔ دوم $n_2=6,\bar x_2=8,s_2^2=16$ دارد. نسبت نمونه‌ای برابر $1/2$ است. فاصلهٔ اطمینان ۹۵ درصد برای $\rho$،
+\[
+\left[\frac{0.5}{F_{0.975;9,5}},\frac{0.5}{F_{0.025;9,5}}\right]
+=\boxed{[0.07484,\ 2.24221]}.
+\]
+در سطح ۵ درصد، شواهد کافی برای رد برابری واریانس‌ها نداریم.
+
+\textbf{مقایسهٔ میانگین‌ها در همان مثال.} متن مبنا دربارهٔ برابری میانگین‌ها نیز پرسیده است؛ این پرسش با فاصلهٔ نسبت واریانس پاسخ داده نمی‌شود. با روش ولچ و $\nu\approx8.048$، فاصلهٔ ۹۵ درصد اختلاف میانگین‌ها تقریباً $[-2.289,6.289]$ است و صفر را دربرمی‌گیرد.
+\edit{میانگین و واریانس دو پارامتر متفاوت‌اند. برای بررسی برابری میانگین‌ها باید فاصله یا آزمون اختلاف میانگین را به کار برد.}
+\end{example}
+\section{داده‌های زوجی و اختلاف میانگین‌ها}
+\source{۲۳ و ۲۴}
+در داده‌های زوجی، $X_i$ و $Y_i$ به یک واحد یا یک زوج مرتبط مربوط‌اند. وابستگی داخل هر زوج مجاز است؛ فرض می‌کنیم زوج‌های مختلف مستقل و هم‌توزیع‌اند. اختلاف‌ها را تعریف کنید:
+\[
+D_i=X_i-Y_i,\qquad
+\mu_D=\mu_X-\mu_Y,
+\qquad\sigma_D^2=\sigma_X^2+\sigma_Y^2-2\Cov(X_i,Y_i).
+\]
+اگر اختلاف‌ها نرمال باشند،
+\[
+\bar D=\frac1n\sum_iD_i=\bar X-\bar Y,\qquad
+S_D^2=\frac1{n-1}\sum_i(D_i-\bar D)^2,
+\qquad
+\frac{\bar D-\mu_D}{S_D/\sqrt n}\sim t_{n-1}.
+\]
+\begin{result}{فاصلهٔ اطمینان زوجی}
+\[\boxed{\bar d\ \pm\ t_{1-\alpha/2,n-1}\frac{s_D}{\sqrt n}.}\]
+داده‌های زوجی را با فرمول دو نمونهٔ مستقل تحلیل نکنید؛ کوواریانس داخل زوج بخشی از اطلاعات مسئله است.
+\end{result}
+\edit{نرمال بودن جداگانهٔ $X_i$ و $Y_i$ برای نرمال بودن اختلاف کافی نیست. فرض مستقیمِ نرمال بودن اختلاف‌ها یا نرمال مشترک بودن هر زوج، شرط درست است.}
+\begin{example}{نمرات روش‌های آماری و جبر خطی}
+نمرات پنج دانشجو در دو درس به شکل زیر است؛ جهت اختلاف، «روش‌های آماری منهای جبر خطی» انتخاب شده است.
+\begin{center}
+\begin{tabular}{r|ccccc}
+\toprule
+دانشجو&$1$&$2$&$3$&$4$&$5$\\
+\midrule
+روش‌های آماری&$17$&$15$&$12$&$18$&$14$\\
+جبر خطی&$19$&$14$&$10$&$13$&$16$\\
+$D_i$&$-2$&$1$&$2$&$5$&$-2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\[
+\bar d=\frac45=0.8,\qquad \sum_i d_i^2=38,
+\qquad s_D^2=\frac{38-5(0.8)^2}{4}=\boxed{8.7}.
+\]
+با فرض نرمال بودن اختلاف‌ها، فاصلهٔ ۹۵ درصد برابر است با
+\[
+0.8\pm2.77645\sqrt{\frac{8.7}{5}}
+=\boxed{[-2.862,\ 4.462]}.
+\]
+وجود صفر در فاصله به معنی نبود شواهد کافی برای اختلاف میانگین دو درس در این سطح است، نه اثبات برابر بودن آن‌ها.
+\edit{در دست‌نویس، پس از نوشتن فرمول صحیح واریانس، جملهٔ $n\bar d^2$ در محاسبه حذف شده و عدد $9.5$ به دست آمده است. مقدار درست $8.7$ و بازهٔ درست همان بازهٔ بالا است.}
+\end{example}
+\section{فاصلهٔ اطمینان نسبت یک جامعه}
+\source{۲۴ و ۲۵}
+اگر $X_i\iid\operatorname{Bern}(p)$، برآوردگر نسبت جامعه برابر است با
+\[
+\widehat p=\frac1n\sum_iX_i,\qquad
+\E(\widehat p)=p,\qquad \Var(\widehat p)=\frac{p(1-p)}n.
+\]
+برای $0<p<1$ و نمونهٔ بزرگ،
+\[
+\frac{\widehat p-p}{\sqrt{p(1-p)/n}}\xrightarrow{d}\N(0,1).
+\]
+با سازگاری $\widehat p$ و جایگزینی پارامتر در خطای استاندارد،
+\[
+\frac{\widehat p-p}{\sqrt{\widehat p(1-\widehat p)/n}}
+\xrightarrow{d}\N(0,1).
+\]
+\begin{result}{فاصلهٔ تقریبی والد برای نسبت}
+\[
+\boxed{\widehat p\ \pm\ z_{1-\alpha/2}
+\sqrt{\frac{\widehat p(1-\widehat p)}n}.}
+\]
+این فاصله دقیق نیست. وقتی تعداد موفقیت‌ها یا شکست‌ها کم باشد، تقریب ممکن است پوشش نامناسبی داشته باشد؛ در $\widehat p=0$ یا $1$ نیز به بازهٔ تک‌نقطه‌ای ناموجه تبدیل می‌شود.
+\end{result}
+\begin{example}{پنج قطعهٔ معیوب از صد قطعه}
+اگر در نمونه‌ای با حجم $100$، تعداد $5$ قطعه معیوب باشد، $\widehat p=0.05$. بازهٔ والد با اطمینان اسمی ۹۵ درصد برابر است با
+\[
+0.05\pm1.95996\sqrt{\frac{0.05(0.95)}{100}}
+=\boxed{[0.00728,\ 0.09272]}.
+\]
+\textbf{نکتهٔ کاربردی.} تعداد عیب‌ها فقط پنج است؛ این مثال در مرز یا خارج از شرایط مناسب تقریب نرمال قرار می‌گیرد. بازهٔ بالا پاسخ روش معرفی‌شده در جزوه است، ولی برای گزارش عملی بهتر است روش‌هایی مانند ویلسون یا روش دقیق دوجمله‌ای بررسی شوند.
+\end{example}
+\section{فاصلهٔ اطمینان اختلاف دو نسبت}
+\source{۲۶}
+برای دو نمونهٔ برنولی مستقل با اندازه‌های $n_1,n_2$ و نسبت‌های $p_1,p_2$،
+\[
+\E(\widehat p_1-\widehat p_2)=p_1-p_2,
+\qquad
+\Var(\widehat p_1-\widehat p_2)=\frac{p_1(1-p_1)}{n_1}+\frac{p_2(1-p_2)}{n_2}.
+\]
+با بزرگ بودن نمونه‌ها و مناسب بودن تقریب،
+\begin{result}{فاصلهٔ تقریبی اختلاف دو نسبت مستقل}
+\[
+\boxed{(\widehat p_1-\widehat p_2)\ \pm\ z_{1-\alpha/2}
+\sqrt{\frac{\widehat p_1(1-\widehat p_1)}{n_1}
++\frac{\widehat p_2(1-\widehat p_2)}{n_2}}.}
+\]
+برای ساخت این فاصله، نسبت‌ها را جداگانه در خطای استاندارد جایگزین می‌کنیم؛ نسبت تجمیعیِ آزمون برابری نسبت‌ها در این فرمول به کار نمی‌رود.
+\end{result}
+\begin{example}{نظر دانشجویان دختر و پسر دربارهٔ یک برنامه}
+از $200$ دانشجوی دختر و $200$ دانشجوی پسر، به‌ترتیب $128$ و $72$ نفر موافق برنامه‌اند. با انتخاب جهت «دختر منهای پسر»،
+\[
+\widehat p_1=0.64,\qquad\widehat p_2=0.36,\qquad
+\widehat p_1-\widehat p_2=0.28.
+\]
+فاصلهٔ اطمینان ۹۵ درصد برابر است با
+\[
+0.28\pm1.95996\sqrt{\frac{0.64(0.36)}{200}+\frac{0.36(0.64)}{200}}
+=\boxed{[0.18592,\ 0.37408]}.
+\]
+با این جهت‌گذاری، نسبت موافقت دختران حدود ۱۸٫۶ تا ۳۷٫۴ واحد درصد بیشتر برآورد می‌شود. برای «پسر منهای دختر»، علامت هر دو کران و ترتیب آن‌ها معکوس می‌شود.
+\end{example}
+
+
+\end{document}
