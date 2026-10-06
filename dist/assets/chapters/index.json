@@ -1,0 +1,50 @@
+[
+  {
+    "id": "chapter-0",
+    "title": "راهنمای استفاده از جزوه",
+    "pages": 1,
+    "pdf": "assets/chapters/chapter-0.pdf",
+    "tex": "assets/chapters/chapter-0.tex",
+    "pdfBytes": 48780
+  },
+  {
+    "id": "chapter-1",
+    "title": "مقدمات احتمال و توزیع‌ها",
+    "pages": 6,
+    "pdf": "assets/chapters/chapter-1.pdf",
+    "tex": "assets/chapters/chapter-1.tex",
+    "pdfBytes": 93965
+  },
+  {
+    "id": "chapter-2",
+    "title": "برآورد نقطه‌ای و معیارهای کیفیت",
+    "pages": 6,
+    "pdf": "assets/chapters/chapter-2.pdf",
+    "tex": "assets/chapters/chapter-2.tex",
+    "pdfBytes": 97670
+  },
+  {
+    "id": "chapter-3",
+    "title": "فاصله‌های اطمینان",
+    "pages": 13,
+    "pdf": "assets/chapters/chapter-3.pdf",
+    "tex": "assets/chapters/chapter-3.tex",
+    "pdfBytes": 155628
+  },
+  {
+    "id": "chapter-4",
+    "title": "آزمون فرض آماری",
+    "pages": 10,
+    "pdf": "assets/chapters/chapter-4.pdf",
+    "tex": "assets/chapters/chapter-4.tex",
+    "pdfBytes": 138541
+  },
+  {
+    "id": "chapter-5",
+    "title": "مرور سریع و راهنمای تطبیق",
+    "pages": 3,
+    "pdf": "assets/chapters/chapter-5.pdf",
+    "tex": "assets/chapters/chapter-5.tex",
+    "pdfBytes": 76838
+  }
+]
