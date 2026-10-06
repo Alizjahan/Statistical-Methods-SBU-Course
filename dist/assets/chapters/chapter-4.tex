@@ -1,0 +1,422 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={آزمون فرض آماری},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\setcounter{chapter}{3}
+\chapter{آزمون فرض آماری}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\source{۲۷ تا ۴۵}
+\section{فرض آماری، آماره و ناحیهٔ رد}
+\begin{definition}{اجزای یک مسئلهٔ آزمون فرض}
+\textbf{فرض آماری} گزاره‌ای دربارهٔ توزیع جامعه یا پارامترهای آن است. فرض مبنا را با $H_0$ و فرض مقابل را با $H_1$ نشان می‌دهیم.
+
+\textbf{فرض ساده} یک توزیع را به‌طور کامل مشخص می‌کند. فرضی که بیش از یک توزیع را مجاز بداند، مرکب است؛ حتی تثبیت یک پارامتر در حضور پارامتر مزاحم نامعلوم می‌تواند فرضی مرکب بسازد.
+
+\textbf{آمارهٔ آزمون} تابعی از نمونه است که بر اساس مقدار آن دربارهٔ رد یا رد نکردن $H_0$ تصمیم می‌گیریم.
+
+\textbf{ناحیهٔ رد} یا بحرانی، مجموعهٔ مقادیر آماره یا نمونه است که به رد $H_0$ منجر می‌شود؛ آن را با $C$ نشان می‌دهیم.
+\end{definition}
+برای مثال، در آزمون میانگین، سه فرض مقابل رایج عبارت‌اند از
+\[
+H_1:\mu<\mu_0,\qquad H_1:\mu>\mu_0,\qquad H_1:\mu\ne\mu_0.
+\]
+این‌ها به‌ترتیب آزمون چپ‌طرفه، راست‌طرفه و دوطرفه را تعیین می‌کنند. در هر سه حالت، مرز فرض صفر $\mu=\mu_0$ است. جهت فرض مقابل باید بر اساس پرسش علمی و پیش از دیدن داده‌ها تعیین شود.
+\begin{important}{رد نکردن، اثبات نیست}
+تصمیم معمول آزمون «رد $H_0$» یا «رد نکردن $H_0$» است. رد نکردن ممکن است از کم بودن شواهد یا توان پایین ناشی شود و به معنای اثبات $H_0$ نیست. در این نسخه، عبارت «قبول فرض صفر» در متن مبنا با همین تعبیر دقیق‌تر جایگزین شده است.
+\end{important}
+\section{خطاهای نوع اول و دوم؛ توان آزمون}
+\source{۲۷ و ۲۸}
+\begin{center}
+\begin{tabular}{r|cc}
+\toprule
+تصمیم & $H_0$ درست است & $H_0$ نادرست است\\
+\midrule
+رد $H_0$ & خطای نوع اول & تصمیم درست\\
+رد نکردن $H_0$ & تصمیم درست & خطای نوع دوم\\
+\bottomrule
+\end{tabular}
+\end{center}
+\begin{result}{سطح و توان}
+برای یک فرض صفر ساده،
+\[
+\alpha=\Prob_{H_0}(\text{رد }H_0).
+\]
+برای یک مقدار مشخص $\theta\in\Theta_1$ از فرض مقابل،
+\[
+\beta(\theta)=\Prob_\theta(\text{رد نکردن }H_0),\qquad
+\pi(\theta)=1-\beta(\theta)=\Prob_\theta(\text{رد }H_0).
+\]
+تابع $\pi(\theta)$ تابع توان است. برای فرض صفر مرکب، سطح آزمون با بیشترین احتمال خطای نوع اول روی مقادیر مجاز فرض صفر کنترل می‌شود.
+\end{result}
+معمولاً $\alpha$ را پیشاپیش در سطحی مانند $0.05$ تثبیت می‌کنیم و میان آزمون‌های دارای این کنترل، توان بیشتر را مطلوب می‌دانیم. با حجم نمونهٔ ثابت، کاهش $\alpha$ اغلب با افزایش $\beta$ همراه است؛ بزرگ‌تر کردن نمونه می‌تواند هر دو خطا را بهبود دهد.
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[x=1.2cm,y=4.1cm]
+\fill[alert!20] plot[domain=1.645:4,samples=70] (\x,{exp(-\x*\x/2)/sqrt(2*pi)})--(4,0)--(1.645,0)--cycle;
+\fill[teal!17] plot[domain=-1:1.645,samples=70] (\x,{exp(-(\x-2.5)^2/2)/sqrt(2*pi)})--(1.645,0)--(-1,0)--cycle;
+\draw[navy,thick] plot[domain=-3:5.5,samples=120] (\x,{exp(-\x*\x/2)/sqrt(2*pi)});
+\draw[teal,thick] plot[domain=-3:5.5,samples=120] (\x,{exp(-(\x-2.5)^2/2)/sqrt(2*pi)});
+\draw[muted,-{Latex}] (-3.1,0)--(5.8,0);
+\draw[gold,dashed] (1.645,0)--(1.645,.44);
+\node[navy,above] at (0,.4) {$H_0$};\node[teal,above] at (2.5,.4) {$H_1$};
+\node[below] at (1.645,0) {$c$};
+\node[alert] at (2.15,.035) {$\alpha$};\node[teal] at (.95,.06) {$\beta$};
+\end{tikzpicture}
+\end{LTR}
+\figcap{نمایش خطای نوع اول و دوم برای یک آزمون راست‌طرفه در برابر یک مقدار مشخص از فرض مقابل. ناحیهٔ رد، سمت راست $c$ است.}
+\end{center}
+\begin{example}{ده پرتاب سکه}
+فرض کنید $X_i$ شاخص شیر آمدن در پرتاب $i$ باشد و
+\[
+X_i\iid\operatorname{Bern}(p),\quad n=10,\qquad
+H_0:p=\frac12,\quad H_1:p=\frac34.
+\]
+ناحیهٔ رد را $C=\{\sum_iX_i\ge7\}$ انتخاب می‌کنیم. اگر $Y=\sum_iX_i$، آنگاه
+\begin{align*}
+\alpha&=\Prob_{p=1/2}(Y\ge7)
+=\sum_{y=7}^{10}\binom{10}{y}2^{-10}
+=\boxed{0.171875},\\
+\beta&=\Prob_{p=3/4}(Y\le6)
+=\sum_{y=0}^{6}\binom{10}{y}(3/4)^y(1/4)^{10-y}
+\approx\boxed{0.224125}.
+\end{align*}
+توان در $p=3/4$ برابر $1-\beta\approx0.775875$ است. این آزمونِ ازپیش‌تعریف‌شده، سطح ۵ درصد ندارد؛ سطح واقعی آن همان $0.171875$ است.
+\end{example}
+\section{آزمون میانگین یک جامعهٔ نرمال؛ واریانس معلوم}
+\source{۲۹ تا ۳۱}
+فرض کنید $X_i\iid\N(\mu,\sigma^2)$ و $\sigma$ معلوم باشد. برای $H_0:\mu=\mu_0$، آمارهٔ
+\[Z=\frac{\bar X-\mu_0}{\sigma/\sqrt n}\]
+تحت فرض صفر، نرمال استاندارد است.
+\subsection{استخراج ناحیهٔ رد چپ‌طرفه}
+برای $H_1:\mu<\mu_0$، میانگین‌های کوچک به سود فرض مقابل‌اند. ناحیهٔ رد را $\bar X-\mu_0<c$ می‌گیریم. از
+\[
+\alpha=\Prob_{H_0}(\bar X-\mu_0<c)
+=\Prob\left(Z<\frac{c}{\sigma/\sqrt n}\right)
+\]
+نتیجه می‌شود $c=z_\alpha\sigma/\sqrt n=-z_{1-\alpha}\sigma/\sqrt n$. پس ناحیهٔ رد $Z<-z_{1-\alpha}$ است.
+\begin{result}{سه آزمون میانگین با واریانس معلوم؛ سطح $\alpha$}
+با مقدار مشاهده‌شدهٔ $z_{\rm obs}$،
+\[
+\begin{array}{c|c}
+\text{فرض مقابل}&\text{شرط رد فرض صفر}\\\hline
+\mu<\mu_0&z_{\rm obs}<-z_{1-\alpha}\\[2pt]
+\mu>\mu_0&z_{\rm obs}>z_{1-\alpha}\\[2pt]
+\mu\ne\mu_0&|z_{\rm obs}|>z_{1-\alpha/2}
+\end{array}
+\]
+\end{result}
+برای آزمون راست‌طرفه، از $\Prob(Z<c/(\sigma/\sqrt n))=1-\alpha$ نتیجه می‌شود $c=z_{1-\alpha}\sigma/\sqrt n$. برای آزمون دوطرفه،
+\[
+\alpha=\Prob(|Z|>c/(\sigma/\sqrt n))
+=2\left[1-\Phi\left(\frac c{\sigma/\sqrt n}\right)\right],
+\]
+بنابراین $c=z_{1-\alpha/2}\sigma/\sqrt n$.
+\begin{example}{آزمون چپ‌طرفه}
+داده‌ها عبارت‌اند از $n=16$، $\bar x=9$ و $\sigma^2=9$. فرض‌ها را
+\[H_0:\mu=10,\qquad H_1:\mu<10\]
+و سطح را $\alpha=0.05$ بگیرید. آنگاه
+\[
+z_{\rm obs}=\frac{9-10}{3/4}=-\frac43\approx-1.333.
+\]
+چون $-1.333>-1.64485$، فرض صفر رد نمی‌شود. مقدار $p$ حدود $0.09121$ است و همین تصمیم را تأیید می‌کند.
+\end{example}
+\begin{example}{آزمون دوطرفه با مقدار آمارهٔ ۲}
+در مثال صفحهٔ ۳۱، $\bar x=3,\mu_0=1,\sigma^2=25$ و محاسبهٔ نوشته‌شده به $z_{\rm obs}=2$ می‌رسد. با خطای استاندارد $1$، حجم نمونهٔ متناظر $n=25$ است. برای
+\[H_0:\mu=1,\qquad H_1:\mu\ne1,\qquad \alpha=0.05,\]
+داریم $|2|>1.95996$؛ پس فرض صفر رد می‌شود. مقدار $p$ دوطرفه تقریباً $0.04550$ است.
+\edit{زیرنویس حجم نمونه در صورت دست‌نویس کم‌خواناست؛ در این مثال، $n=25$ از خطای استاندارد و مقدار آمارهٔ همان حل بازسازی شده است.}
+\end{example}
+\section{آزمون میانگین یک جامعهٔ نرمال؛ واریانس نامعلوم}
+\source{۳۲}
+وقتی $\sigma$ نامعلوم باشد، آمارهٔ مناسب
+\[T=\frac{\bar X-\mu_0}{S/\sqrt n}\sim t_{n-1}\quad\text{تحت }H_0\]
+است. استخراج ناحیهٔ رد مانند حالت قبل انجام می‌شود و چندک‌های استیودنت جایگزین چندک‌های نرمال می‌شوند.
+\begin{result}{سه آزمون استیودنت تک‌نمونه‌ای}
+\[
+\begin{array}{c|c}
+H_1&\text{شرط رد }H_0\\\hline
+\mu<\mu_0&t_{\rm obs}<-t_{1-\alpha,n-1}\\[2pt]
+\mu>\mu_0&t_{\rm obs}>t_{1-\alpha,n-1}\\[2pt]
+\mu\ne\mu_0&|t_{\rm obs}|>t_{1-\alpha/2,n-1}
+\end{array}
+\]
+\end{result}
+\begin{example}{آیا میانگین نمرات ریاضی برابر ۱۵ است؟}
+در نمونه‌ای با حجم $9$، میانگین و انحراف معیار نمرات به‌ترتیب $13$ و $3$ است. با فرض نرمال بودن جامعه، برای
+\[H_0:\mu=15,\qquad H_1:\mu\ne15\]
+داریم
+\[
+t_{\rm obs}=\frac{13-15}{3/\sqrt9}=-2,\qquad
+\nu=8,\qquad t_{0.975,8}=2.30600.
+\]
+چون $|-2|=2<2.30600$، در سطح ۵ درصد فرض صفر \textbf{رد نمی‌شود}. مقدار $p$ دوطرفه حدود $0.08052$ است.
+\edit{در دست‌نویس مقدار بحرانی $1.86$، مربوط به $t_{0.95,8}$، برای آزمون دوطرفهٔ ۵ درصد استفاده و نتیجهٔ رد گرفته شده است. چندک درست $t_{0.975,8}$ و تصمیم درست، رد نکردن است.}
+\end{example}
+\section{آزمون اختلاف میانگین دو جامعهٔ مستقل}
+\source{۳۳ و ۳۴}
+در دست‌نویس، بعضی روابط با جهت $\mu_2-\mu_1$ نوشته شده‌اند. برای هماهنگی با فصل قبل، در این نسخه
+\[\Delta=\mu_1-\mu_2,\qquad H_0:\Delta=\Delta_0\]
+را به کار می‌بریم. تعویض جهت اختلاف، علامت آماره و جهت فرض‌های یک‌طرفه را هم عوض می‌کند.
+\subsection{واریانس‌های معلوم}
+آمارهٔ آزمون تحت فرض صفر برابر است با
+\[
+Z=\frac{(\bar X_1-\bar X_2)-\Delta_0}
+{\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}}\sim\N(0,1).
+\]
+برای $H_1:\Delta<\Delta_0$، $Z<-z_{1-\alpha}$؛ برای $H_1:\Delta>\Delta_0$، $Z>z_{1-\alpha}$؛ و برای $H_1:\Delta\ne\Delta_0$، $|Z|>z_{1-\alpha/2}$ شرط رد است.
+\subsection{واریانس‌های نامعلوم ولی برابر}
+از $S_p^2$ فصل قبل استفاده می‌کنیم:
+\[
+T_P=\frac{(\bar X_1-\bar X_2)-\Delta_0}
+{S_p\sqrt{1/n_1+1/n_2}}\sim t_{n_1+n_2-2}.
+\]
+برای فرض مقابل کوچک‌تر، بزرگ‌تر و نابرابر، شرط‌های رد به‌ترتیب
+\[
+T_P<-t_{1-\alpha,\nu},\qquad
+T_P>t_{1-\alpha,\nu},\qquad
+|T_P|>t_{1-\alpha/2,\nu},\qquad \nu=n_1+n_2-2
+\]
+هستند.
+\subsection{واریانس‌های نامعلوم و نامساوی}
+\[
+T_W=\frac{(\bar X_1-\bar X_2)-\Delta_0}
+{\sqrt{S_1^2/n_1+S_2^2/n_2}}\approx t_\nu,
+\]
+که $\nu$ همان درجهٔ آزادی ساترویت در فصل قبل است. شرط‌های رد دقیقاً شکل سه شرط بالا را دارند، اما با $T_W$ و درجهٔ آزادی ولچ؛ کنترل سطح در این حالت تقریبی است.
+\section{آزمون واریانس یک جامعهٔ نرمال}
+\source{۳۵ و ۳۶}
+فرض صفر $H_0:\sigma^2=\sigma_0^2$ است. بسته به معلوم بودن میانگین، دو آماره داریم:
+\[
+Q=\begin{cases}
+\displaystyle\frac{\sum_i(X_i-\mu)^2}{\sigma_0^2},&\mu\text{ معلوم،}\quad\nu=n,\\[5pt]
+\displaystyle\frac{(n-1)S^2}{\sigma_0^2},&\mu\text{ نامعلوم،}\quad\nu=n-1.
+\end{cases}
+\]
+تحت فرض صفر، $Q\sim\chi^2_\nu$.
+
+\textbf{استخراج برای فرض مقابل کوچک‌تر.} اگر $\mu$ معلوم باشد، قرار دهید $S_0^2=n^{-1}\sum_i(X_i-\mu)^2$. شرط رد را $S_0^2/\sigma_0^2<c$ بگیرید. از
+\[
+\alpha=\Prob_{H_0}\left(\frac{S_0^2}{\sigma_0^2}<c\right)
+=\Prob(\chi^2_n<nc)
+\]
+نتیجه می‌شود $c=\chi^2_{\alpha,n}/n$. در حالت میانگین نامعلوم، جایگزینی $n$ با $n-1$ و $S_0^2$ با $S^2$ نتیجهٔ متناظر را می‌دهد.
+\begin{result}{سه آزمون واریانس}
+\[
+\begin{array}{c|c}
+H_1&\text{شرط رد }H_0\\\hline
+\sigma^2<\sigma_0^2&Q<\chi^2_{\alpha,\nu}\\[2pt]
+\sigma^2>\sigma_0^2&Q>\chi^2_{1-\alpha,\nu}\\[2pt]
+\sigma^2\ne\sigma_0^2&Q<\chi^2_{\alpha/2,\nu}\ \text{یا}\ Q>\chi^2_{1-\alpha/2,\nu}
+\end{array}
+\]
+در آزمون دوطرفهٔ این جزوه، احتمال هر دُم برابر $\alpha/2$ انتخاب شده است؛ چون کای‌دو نامتقارن است، شرط رد را با قدرمطلق یک حد متقارن نمی‌نویسیم.
+\end{result}
+\section{آزمون برابری واریانس دو جامعهٔ نرمال}
+\source{۳۷ و ۳۸}
+دو نمونهٔ نرمال مستقل در نظر بگیرید. از تعریف $R_j$ در فصل قبل استفاده می‌کنیم: اگر میانگین جامعه معلوم باشد، $R_j=n_j^{-1}\sum_i(X_{ji}-\mu_j)^2$ و $\nu_j=n_j$؛ در غیر این صورت $R_j=S_j^2$ و $\nu_j=n_j-1$.
+
+برای فرض صفر $H_0:\sigma_1^2/\sigma_2^2=1$، آمارهٔ
+\[F=\frac{R_1}{R_2}\sim F_{\nu_1,\nu_2}\]
+تحت فرض صفر معتبر است. چون نسبت کوچک‌تر به سود واریانس اول کوچک‌تر است،
+\begin{result}{سه آزمون نسبت واریانس‌ها}
+\[
+\begin{array}{c|c}
+H_1&\text{شرط رد }H_0\\\hline
+\sigma_1^2/\sigma_2^2<1&F<F_{\alpha;\nu_1,\nu_2}\\[2pt]
+\sigma_1^2/\sigma_2^2>1&F>F_{1-\alpha;\nu_1,\nu_2}\\[2pt]
+\sigma_1^2/\sigma_2^2\ne1&F<F_{\alpha/2;\nu_1,\nu_2}\ \text{یا}\ F>F_{1-\alpha/2;\nu_1,\nu_2}
+\end{array}
+\]
+\end{result}
+اگر فرض صفر $\sigma_1^2/\sigma_2^2=\rho_0$ باشد، آمارهٔ $F=(R_1/R_2)/\rho_0$ را با همین چندک‌ها مقایسه می‌کنیم.
+\begin{important}{محدودیت مدل}
+روابط دقیق کای‌دو و $F$ در این فصل به نرمال بودن جامعه‌ها متکی‌اند. صرف بزرگ بودن نمونه، فرض‌های دقیق این آزمون‌ها را جایگزین نمی‌کند. ترتیب صورت، مخرج و درجات آزادی را ثابت نگه دارید.
+\end{important}
+\section{آزمون میانگین در داده‌های زوجی}
+\source{۳۹}
+با تعریف $D_i=X_i-Y_i$، آزمون اختلاف میانگین‌ها به آزمون تک‌نمونه‌ای اختلاف‌ها تبدیل می‌شود. برای
+\[H_0:\mu_D=\Delta_0\]
+آمارهٔ
+\[T_D=\frac{\bar D-\Delta_0}{S_D/\sqrt n}\sim t_{n-1}\]
+را به کار می‌بریم؛ این رابطه در صورت نرمال بودن اختلاف‌ها دقیق است. در آزمون برابری میانگین‌ها $\Delta_0=0$ است. سه ناحیهٔ رد عبارت‌اند از
+\[
+\begin{array}{c|c}
+H_1&\text{شرط رد }H_0\\\hline
+\mu_D<\Delta_0&T_D<-t_{1-\alpha,n-1}\\[2pt]
+\mu_D>\Delta_0&T_D>t_{1-\alpha,n-1}\\[2pt]
+\mu_D\ne\Delta_0&|T_D|>t_{1-\alpha/2,n-1}
+\end{array}
+\]
+استقلال لازم، استقلال \textbf{زوج‌ها از یکدیگر} است؛ استقلال دو عضو داخل هر زوج لازم نیست.
+\section{آزمون نسبت یک جامعه}
+\source{۴۰}
+برای $X_i\iid\operatorname{Bern}(p)$ و $H_0:p=p_0$، با $0<p_0<1$، آمارهٔ آزمون بزرگ‌نمونه‌ای
+\[Z=\frac{\widehat p-p_0}{\sqrt{p_0(1-p_0)/n}}\approx\N(0,1)\quad\text{تحت }H_0\]
+است. برای فرض مقابل‌های $p<p_0$، $p>p_0$ و $p\ne p_0$ به‌ترتیب شرط‌های
+\[
+Z<-z_{1-\alpha},\qquad Z>z_{1-\alpha},\qquad |Z|>z_{1-\alpha/2}
+\]
+به کار می‌روند.
+\begin{important}{در آزمون، واریانس را تحت فرض صفر بسازید}
+برای این آزمون، خطای استاندارد شامل $p_0$ است؛ در فاصلهٔ والد از $\widehat p$ استفاده کردیم. شمار موفقیت و شکستِ مورد انتظار تحت فرض صفر باید برای تقریب نرمال کافی باشد. در نمونهٔ کوچک، آزمون دقیق دوجمله‌ای گزینهٔ مناسب‌تری است.
+\end{important}
+\section{آزمون برابری دو نسبت مستقل}
+\source{۴۱ و ۴۲}
+فرض کنید $X_{1i}\iid\operatorname{Bern}(p_1)$ و $X_{2j}\iid\operatorname{Bern}(p_2)$ و دو نمونه مستقل‌اند. هدف، آزمون
+\[H_0:p_1=p_2\]
+است. تحت فرض صفر، نسبت مشترک $p$ داریم و برآوردگر تجمیعی آن برابر است با
+\[
+\widehat p=\frac{\sum_iX_{1i}+\sum_jX_{2j}}{n_1+n_2}
+=\frac{n_1\widehat p_1+n_2\widehat p_2}{n_1+n_2}.
+\]
+بنابراین آمارهٔ بزرگ‌نمونه‌ای آزمون برابر است با
+\[
+\boxed{Z=\frac{\widehat p_1-\widehat p_2}
+{\sqrt{\widehat p(1-\widehat p)(1/n_1+1/n_2)}}.}
+\]
+برای فرض‌های مقابل $p_1<p_2$، $p_1>p_2$ و $p_1\ne p_2$، شرط‌های رد به‌ترتیب
+\[
+Z<-z_{1-\alpha},\qquad Z>z_{1-\alpha},\qquad |Z|>z_{1-\alpha/2}
+\]
+هستند. نسبت تجمیعی به این دلیل معتبر است که فرض صفر، برابری دو نسبت را تحمیل می‌کند. برای آزمون اختلاف غیرصفر $p_1-p_2=\Delta_0$، این تجمیع ساده عموماً معتبر نیست.
+\section{مقدار احتمالی یا مقدار \lr{p}}
+\source{۴۳ تا ۴۵}
+\begin{definition}{مقدار احتمالی آزمون}
+مقدار $p$ کوچک‌ترین سطح معنی‌داری در خانوادهٔ آزمون‌های مورد نظر است که در آن، دادهٔ مشاهده‌شده به رد $H_0$ منجر می‌شود. به‌طور معادل، تحت فرض صفر، احتمال مشاهدهٔ مقداری از آماره به اندازهٔ مقدار مشاهده‌شده یا افراطی‌تر در جهت فرض مقابل است.
+\end{definition}
+\begin{important}{مقدار $p$ چه چیزی را نمی‌گوید؟}
+مقدار $p$ احتمال درست بودن $H_0$ نیست. این مقدار به مدل، فرض‌های آزمون و جهت فرض مقابل وابسته است؛ کوچک بودن آن نیز به‌تنهایی اندازه یا اهمیت عملی اثر را بیان نمی‌کند.
+\end{important}
+اگر آمارهٔ $T$ تحت فرض صفر تابع توزیع پیوستهٔ $G_0$ داشته باشد و مقدار مشاهده‌شده $t_{\rm obs}$ باشد،
+\[
+\begin{array}{c|c}
+\text{جهت آزمون}&\text{مقدار }p\\\hline
+\text{چپ‌طرفه}&G_0(t_{\rm obs})\\[2pt]
+\text{راست‌طرفه}&1-G_0(t_{\rm obs})\\[2pt]
+\text{دوطرفه با دو دُم برابر}&2\min\{G_0(t_{\rm obs}),1-G_0(t_{\rm obs})\}
+\end{array}
+\]
+برای نرمال و استیودنتِ متقارن، مقدار دوطرفه را می‌توان به صورت $2[1-G_0(|t_{\rm obs}|)]$ نوشت. برای توزیع‌های نامتقارن، تعریف دوطرفه به شیوهٔ انتخاب ناحیهٔ رد وابسته است؛ فرمول جدول به آزمون دو دُم برابر مربوط می‌شود.
+\begin{result}{قاعدهٔ تصمیم بر اساس مقدار $p$}
+\[
+p\le\alpha\quad\Longrightarrow\quad\text{رد }H_0,
+\qquad
+p>\alpha\quad\Longrightarrow\quad\text{رد نکردن }H_0.
+\]
+در مدل پیوسته، انتخاب $<$ یا $\le$ در مرز، احتمال خطا را تغییر نمی‌دهد؛ قرارداد تصمیم این جزوه $\le$ است.
+\end{result}
+\begin{example}{میانگین ضخامت محصول جدید}
+ضخامت محصول قدیمی میانگین $500$ و انحراف معیار معلوم $20$ دارد. از محصول جدید، نمونه‌ای با $n=25$ و میانگین $508$ به دست آمده است. برای بررسی افزایش میانگین،
+\[H_0:\mu=500,\qquad H_1:\mu>500,\qquad
+z_{\rm obs}=\frac{508-500}{20/\sqrt{25}}=2.\]
+با فرض مدل نرمال برای جامعه، یا مناسب بودن تقریب میانگین نمونه،
+\[
+p=\Prob(Z\ge2)=1-\Phi(2)=\boxed{0.0227501}.
+\]
+در سطح $\alpha=0.05$، چون $p<0.05$، فرض صفر رد می‌شود؛ در سطح $\alpha=0.01$، چون $p>0.01$، رد نمی‌شود.
+
+همین نتیجه با مقادیر بحرانی به دست می‌آید: $z_{0.95}=1.64485<2$ ولی $z_{0.99}=2.32635>2$.
+\end{example}
+\begin{center}
+\begin{LTR}
+\begin{tikzpicture}[x=1.55cm,y=4cm]
+\fill[teal!22] plot[domain=2:3.8,samples=65] (\x,{exp(-\x*\x/2)/sqrt(2*pi)})--(3.8,0)--(2,0)--cycle;
+\draw[navy,thick] plot[domain=-3.4:3.8,samples=130] (\x,{exp(-\x*\x/2)/sqrt(2*pi)});
+\draw[muted,-{Latex}] (-3.5,0)--(4,0) node[right] {$z$};
+\draw[gold,dashed] (1.64485,0)--(1.64485,.29);
+\draw[teal,thick] (2,0)--(2,.15);
+\draw[muted,dashed] (2.32635,0)--(2.32635,.38);
+\node[gold,anchor=south east] at (1.64485,.29) {$z_{0.95}=1.645$};
+\node[muted,anchor=south west] at (2.32635,.38) {$z_{0.99}=2.326$};
+\node[below,teal] at (2,0) {$z_{\rm obs}=2$};
+\draw[-{Latex},teal] (3,.19) node[above] {$p=0.02275$}--(2.6,.012);
+\end{tikzpicture}
+\end{LTR}
+\figcap{بازطراحی شکل‌های صفحه‌های ۴۳ تا ۴۵: مقدار مشاهده‌شده از حد بحرانی ۵ درصد عبور کرده، اما از حد بحرانی ۱ درصد عبور نکرده است. مساحت سبزآبی، مقدار $p$ را نشان می‌دهد.}
+\end{center}
+\section{رابطهٔ آزمون دوطرفه و فاصلهٔ اطمینان}
+\begin{result}{دو بیان یک تصمیم}
+در روش‌های متناظر، آزمون دوطرفهٔ سطح $\alpha$، فرض صفر $\theta=\theta_0$ را دقیقاً زمانی رد می‌کند که $\theta_0$ در فاصلهٔ اطمینان $1-\alpha$ متناظر نباشد. این هم‌ارزی به یکسان بودن مدل، آماره و روش ساخت دو طرف وابسته است.
+\end{result}
+برای مثال، در آزمون میانگین با واریانس معلوم،
+\[
+\left|\frac{\bar x-\mu_0}{\sigma/\sqrt n}\right|>z_{1-\alpha/2}
+\quad\Longleftrightarrow\quad
+\mu_0\notin\left[\bar x\pm z_{1-\alpha/2}\frac\sigma{\sqrt n}\right].
+\]
+\textbf{مسیر پیشنهادی حل مسائل آزمون.} ابتدا پارامتر و جهت اثر را مشخص کنید؛ فرض‌ها و سطح $\alpha$ را بنویسید؛ سپس شرایط روش و خطای استاندارد را تعیین کنید. آماره و مقدار $p$ یا حد بحرانی را محاسبه کنید و در پایان، تصمیم را در زبان مسئله همراه با جهت و اندازهٔ اثر گزارش دهید.
+
+
+
+\end{document}
