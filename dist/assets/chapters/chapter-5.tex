@@ -1,0 +1,171 @@
+% !TeX program = xelatex
+% Compile twice with XeLaTeX. All illustrations are native vector TikZ drawings.
+\documentclass[12pt,a4paper,oneside]{report}
+\XeTeXgenerateactualtext=1
+\usepackage[margin=23mm,top=24mm,bottom=24mm,headheight=27pt]{geometry}
+\usepackage{amsmath,amssymb,mathtools,bm}
+\usepackage{booktabs,array,longtable,tabularx}
+\usepackage[table]{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,calc,patterns}
+\usepackage[most]{tcolorbox}
+\usepackage{titlesec,needspace}
+\usepackage{hyperref}
+\usepackage{bookmark}
+\usepackage{xepersian}
+\settextfont[Scale=1.06,BoldFont=Amiri-Bold.ttf]{Amiri-Regular.ttf}
+\setlatintextfont[BoldFont=texgyretermes-bold.otf,ItalicFont=texgyretermes-italic.otf,BoldItalicFont=texgyretermes-bolditalic.otf]{texgyretermes-regular.otf}
+\definecolor{navy}{HTML}{163747}
+\definecolor{teal}{HTML}{127C80}
+\definecolor{gold}{HTML}{B18542}
+\definecolor{paper}{HTML}{F3F7F7}
+\definecolor{muted}{HTML}{5E7178}
+\definecolor{alert}{HTML}{A45538}
+\hypersetup{unicode=true,colorlinks=true,linkcolor=navy,urlcolor=teal,
+ pdftitle={روش‌های آماری ـ جزوهٔ بازنویسی‌شده},pdfsubject={احتمال، برآورد نقطه‌ای، فاصلهٔ اطمینان و آزمون فرض}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\linespread{1.12}
+\raggedbottom
+\setcounter{tocdepth}{1}
+\setcounter{secnumdepth}{2}
+\allowdisplaybreaks[2]
+\emergencystretch=1em
+% Page styles use explicit boxes to keep bidi direction groups balanced.
+\makeatletter
+\def\ps@lecture{%
+  \def\@oddhead{\vbox{\hbox to\textwidth{\small
+    \rl{روش‌های آماری}\hfil\rl{\leftmark}}%
+    \kern4pt\hrule height .35pt}}%
+  \let\@evenhead\@oddhead
+  \def\@oddfoot{\hfil\thepage\hfil}%
+  \let\@evenfoot\@oddfoot}
+\makeatother
+\pagestyle{lecture}
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+\titleformat{\chapter}[display]{\color{navy}\bfseries\Huge}{\large فصل \thechapter}{8pt}{}[\vspace{4pt}\color{gold}\titlerule]
+\titlespacing*{\chapter}{0pt}{0pt}{18pt}
+\titleformat{\section}{\Large\bfseries\color{navy}}{\thesection}{.6em}{}
+\titleformat{\subsection}{\large\bfseries\color{teal}}{\thesubsection}{.6em}{}
+\tcbset{enhanced,breakable,boxrule=.45pt,arc=1.5mm,
+ left=3mm,right=3mm,top=2mm,bottom=2mm,before skip=9pt,after skip=9pt,
+ fonttitle=\bfseries,coltitle=white,colback=paper,colframe=teal}
+\newtcolorbox{definition}[1]{breakable=false,title={تعریف | #1},colframe=navy,colback=navy!3!white}
+\newtcolorbox{result}[1]{breakable=false,title={نتیجهٔ کلیدی | #1},colframe=teal,colback=teal!4!white}
+\newtcolorbox{important}[1]{breakable=false,title={دقت کنید | #1},colframe=gold,colback=gold!6!white}
+\newcounter{ex}[chapter]
+\newenvironment{example}[1]{\refstepcounter{ex}\begin{tcolorbox}[breakable=false,title={مثال \thechapter.\arabic{ex} | #1},colframe=muted,colback=white]}{\end{tcolorbox}}
+\newcommand{\edit}[1]{\par\begingroup\small\color{alert}\textbf{تکمیل یا اصلاح علمی.} #1\par\endgroup}
+\newcommand{\source}[1]{\par{\small\color{muted} مبنا: صفحه‌های #1 فایل دست‌نویس.}\par}
+\newcommand{\E}{\mathbb E}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\MSE}{\operatorname{MSE}}
+\newcommand{\Bias}{\operatorname{Bias}}
+\newcommand{\SE}{\operatorname{SE}}
+\newcommand{\iid}{\overset{\mathrm{iid}}{\sim}}
+\newcommand{\N}{\mathcal N}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Prob}{\mathbb P}
+\newcommand{\sol}{\par\textbf{حل.} }
+\newcommand{\figcap}[1]{\par\smallskip{\small\color{muted}#1}\par}
+
+\hypersetup{pdftitle={مرور سریع و راهنمای تطبیق},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}
+\begin{document}
+\appendix
+\chapter{مرور سریع و راهنمای تطبیق}
+\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}
+
+\begingroup\small\linespread{1.0}\selectfont
+\section{انتخاب روش برای میانگین‌ها}
+\begin{center}\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{>{\raggedleft\arraybackslash}p{57mm} >{\centering\arraybackslash}p{59mm} >{\centering\arraybackslash}p{24mm}}
+\toprule
+مسئله & خطای استاندارد & توزیع مرجع\\
+\midrule
+یک میانگین؛ واریانس معلوم & $\sigma/\sqrt n$ & $Z$\\
+یک میانگین نرمال؛ واریانس نامعلوم & $S/\sqrt n$ & $t_{n-1}$\\
+اختلاف دو میانگین؛ واریانس‌ها معلوم & $\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}$ & $Z$\\
+دو نمونهٔ مستقل؛ واریانس نامعلوم مشترک & $S_p\sqrt{1/n_1+1/n_2}$ & $t_{n_1+n_2-2}$\\
+دو نمونهٔ مستقل؛ ولچ & $\sqrt{S_1^2/n_1+S_2^2/n_2}$ & $t_\nu$ تقریبی\\
+داده‌های زوجی & $S_D/\sqrt n$ & $t_{n-1}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+برای ساخت بازهٔ دوطرفه، «برآورد نقطه‌ای $\pm$ چندک $1-\alpha/2$ ضرب‌در خطای استاندارد» را به کار ببرید. برای آزمون، «برآورد منهای مقدار فرض صفر، تقسیم بر خطای استاندارد» را با چندک مناسب جهت آزمون مقایسه کنید.
+\section{چند تمایز که از خطا جلوگیری می‌کند}
+\begin{important}{پیش از جای‌گذاری عددها}
+\textbf{پارامتر دوم نرمال}: واریانس است؛ برای به دست آوردن $\sigma$ ریشه بگیرید.
+
+\textbf{سطح و جهت آزمون}: دوطرفهٔ ۵ درصد به چندک $0.975$ نیاز دارد؛ یک‌طرفهٔ ۵ درصد به چندک $0.95$.
+
+\textbf{استقلال و زوجی بودن}: نمونهٔ مستقل و زوج‌های مرتبط، خطاهای استاندارد متفاوتی دارند.
+
+\textbf{واریانس نمونه}: $S^2$ با مخرج $n-1$، درحالی‌که برآورد حول میانگین معلوم با مخرج $n$ است.
+
+\textbf{نسبت‌ها}: در آزمون تک‌نسبتی، $p_0$؛ در فاصلهٔ والد، $\widehat p$؛ در آزمون برابری دو نسبت، نسبت تجمیعی را به کار ببرید.
+
+\textbf{نااریبی و سازگاری}: اولی دربارهٔ امید برآوردگر در حجم نمونهٔ معین است؛ دومی دربارهٔ رفتار دنبالهٔ برآوردگرها با رشد حجم نمونه.
+\end{important}
+\clearpage
+\section{مهم‌ترین بازسازی‌ها و اصلاحات علمی}
+موارد زیر تغییرهای مؤثر بر معنا یا نتیجه‌اند؛ بقیهٔ تغییرها عمدتاً یکدست‌سازی نمادگذاری، نگارش و تکمیل مراحل محاسبه هستند.
+\begin{enumerate}\small\setlength{\itemsep}{2pt}\setlength{\parsep}{0pt}
+\item \textbf{صفحه‌های ۱ و ۲:} روابط چگالی به توزیع‌های مطلقاً پیوسته محدود شد و قیود وجود گشتاورها افزوده شد.
+\item \textbf{صفحهٔ ۴:} رابطهٔ درست بازگشتی تابع گاما، $\Gamma(\alpha+1)=\alpha\Gamma(\alpha)$، نوشته شد و قرارداد نرخ مشخص شد.
+\item \textbf{صفحه‌های ۶ تا ۸:} اثبات اریبی واریانس با مخرج $n$، حل ترکیب بهینه و شرایط کافی سازگاری تکمیل شد. مثال دوجمله‌ای با آمارهٔ نامعمول، همراه با خوانش استفاده‌شده حفظ شد.
+\item \textbf{صفحه‌های ۱۰ و ۱۲ تا ۱۳:} استقلال لازم برای ترکیب نرمال و ساخت کای‌دو و استیودنت تصریح شد؛ استدلال درجات آزادی و درجهٔ صحیح $n-1$ اصلاح شد.
+\item \textbf{صفحهٔ ۱۴:} حجم نمونهٔ مورد نیاز به $62$ گرد شد؛ حاشیهٔ خطا به‌عنوان کران احتمالی، و نه تضمین قطعی، تعبیر شد.
+\item \textbf{صفحهٔ ۱۶:} برای واریانس دوم، خوانش $60$ انتخاب و نتیجهٔ خوانش جایگزین $90$ نیز گزارش شد.
+\item \textbf{صفحهٔ ۱۸:} روابط ولچ به‌عنوان تقریب معرفی شد.
+\item \textbf{صفحهٔ ۲۲:} بررسی برابری میانگین‌ها از بررسی برابری واریانس‌ها تفکیک شد.
+\item \textbf{صفحه‌های ۲۳ و ۳۹:} فرض نرمال بودن اختلاف‌های زوجی به‌درستی بیان شد.
+\item \textbf{صفحهٔ ۲۴:} واریانس اختلاف‌ها $8.7$ و فاصلهٔ اطمینان آن $[-2.862,4.462]$ محاسبه شد؛ حذف جملهٔ $n\bar d^2$ در دست‌نویس اصلاح شد.
+\item \textbf{صفحه‌های ۲۵ و ۲۶:} فاصله‌های نسبت به‌عنوان روش تقریبی معرفی و محدودیت نمونهٔ دارای پنج موفقیت مشخص شد.
+\item \textbf{صفحهٔ ۳۱:} در مثال با آمارهٔ $2$، حجم نمونهٔ $25$ از مراحل حل بازسازی شد.
+\item \textbf{صفحهٔ ۳۲:} آزمون دوطرفهٔ نمرات ریاضی به چندک $t_{0.975,8}=2.306$ اصلاح شد؛ تصمیم صحیح در سطح ۵ درصد، رد نکردن فرض صفر است.
+\item \textbf{صفحه‌های ۳۳ و ۳۴:} جهت تمام اختلاف میانگین‌ها به «اول منهای دوم» یکدست شد؛ جهت نامساوی‌ها نیز متناظر تنظیم شد.
+\item \textbf{صفحه‌های ۴۳ تا ۴۵:} مقدار دقیق‌تر $p=0.0227501$ نوشته شد و تصمیم‌های سطح ۵ و ۱ درصد از هم تفکیک شدند. تفسیر «رد نکردن» جایگزین «اثبات یا قبول قطعی» شد.
+\end{enumerate}
+\clearpage
+\section{نقشهٔ تطبیق با فایل ۴۵ صفحه‌ای}
+شماره‌های ستون اول، شمارهٔ صفحات PDF ارسالی هستند؛ ممکن است با شماره‌های دست‌نویس گوشهٔ برگه‌ها یکسان نباشند. این جدول امکان بازبینی پوشش همهٔ صفحات را فراهم می‌کند.
+\begin{center}\small
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{>{\centering\arraybackslash}p{22mm} p{113mm}}
+\toprule
+صفحات مبنا & محل و موضوع بازنویسی\\
+\midrule\endfirsthead
+\toprule صفحات مبنا & محل و موضوع بازنویسی\\\midrule\endhead
+۱–۲ & فصل اول: تعریف‌ها، تابع احتمال و چگالی، توزیع مشترک و امید ریاضی\\
+۳–۴ & فصل اول: واریانس، کوواریانس، میانگین نمونه و توزیع‌های مهم\\
+۵ & فصل دوم: جامعه، نمونه، آماره و مثال توزیع نمونه‌ای میانگین\\
+۶ & فصل دوم: نااریبی، واریانس نمونه، خطای میانگین مربعات و کارایی\\
+۷–۸ & فصل دوم: مثال‌های کارایی، ترکیب خطی و سازگاری؛ ارجاع‌های کتاب\\
+۹–۱۱ & فصل سوم: فاصلهٔ اطمینان، کمیت محوری و میانگین با واریانس معلوم\\
+۱۲–۱۳ & فصل سوم: کای‌دو و استیودنت؛ میانگین با واریانس نامعلوم\\
+۱۴ & فصل سوم: حاشیهٔ خطا و تعیین حجم نمونه\\
+۱۵ & فصل سوم: قضیهٔ حد مرکزی و اختلاف دو میانگین\\
+۱۶–۱۸ & فصل سوم: اختلاف میانگین با واریانس‌های معلوم، مشترک و ولچ\\
+۱۹–۲۰ & فصل سوم: فاصلهٔ واریانس با میانگین معلوم و نامعلوم\\
+۲۰–۲۲ & فصل سوم: توزیع $F$، نسبت واریانس‌ها و خاصیت معکوس چندک\\
+۲۳–۲۴ & فصل سوم: داده‌های زوجی و مثال نمرهٔ دو درس\\
+۲۴–۲۵ & فصل سوم: فاصلهٔ اطمینان یک نسبت و مثال قطعات معیوب\\
+۲۶ & فصل سوم: اختلاف دو نسبت و مثال نظر دانشجویان\\
+۲۷–۲۸ & فصل چهارم: فرض‌ها، خطاها، توان و مثال سکه\\
+۲۹–۳۱ & فصل چهارم: سه جهت آزمون میانگین با واریانس معلوم\\
+۳۲ & فصل چهارم: آزمون استیودنت تک‌نمونه‌ای و مثال نمرات ریاضی\\
+۳۳–۳۴ & فصل چهارم: آزمون اختلاف میانگین‌های مستقل\\
+۳۵–۳۶ & فصل چهارم: آزمون واریانس یک جامعهٔ نرمال\\
+۳۷–۳۸ & فصل چهارم: آزمون برابری واریانس دو جامعهٔ نرمال\\
+۳۹ & فصل چهارم: آزمون میانگین در داده‌های زوجی\\
+۴۰ & فصل چهارم: آزمون یک نسبت\\
+۴۱–۴۲ & فصل چهارم: آزمون برابری دو نسبت و برآورد تجمیعی\\
+۴۳–۴۵ & فصل چهارم: مقدار احتمالی، مثال محصول جدید و تصمیم در دو سطح\\
+\bottomrule
+\end{longtable}
+\end{center}
+\endgroup
+
+\end{document}
