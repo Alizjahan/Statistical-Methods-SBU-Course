@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#173d3b"><meta name="description" content="کتاب تعاملی روش‌های آماری؛ متن کامل جزوه، شبیه‌سازی‌های تعاملی و نسخهٔ PDF. استاد: دکتر سکینه دهقان؛ گردآورنده: احسان شهبازی.">
+  <title>روش‌های آماری — کتاب تعاملی</title>
+  <link rel="stylesheet" href="vendor/katex/katex.min.css"><link rel="stylesheet" href="style.css">
+  <script defer src="vendor/katex/katex.min.js"></script><script type="module" src="app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">رفتن به محتوای کتاب</a>
+  <header class="topbar">
+    <a href="#home" class="brand"><span class="brand-symbol" aria-hidden="true">∑</span><span>روش‌های آماری<small>کتابِ تعاملی</small></span></a>
+    <nav aria-label="ناوبری اصلی"><button data-view="read" class="nav-btn active">مطالعهٔ کتاب</button><button data-view="labs" class="nav-btn">آزمایشگاه</button><button data-view="pdf" class="nav-btn">نسخهٔ PDF</button></nav>
+    <div class="header-actions"><button id="search-open" class="icon-btn" aria-label="جست‌وجو در کتاب">⌕</button><button id="settings-open" class="icon-btn" aria-label="تنظیمات مطالعه">آ<span class="small-a">آ</span></button><button id="menu" class="icon-btn mobile" aria-label="نمایش فهرست" aria-expanded="false">☰</button></div>
+  </header>
+  <div class="layout">
+    <aside id="sidebar" class="sidebar" aria-label="فهرست کتاب">
+      <div class="sidebar-caption">فهرست کتاب <span>۶ بخش</span></div>
+      <div id="toc"></div>
+      <div class="sidebar-bottom"><div class="progress-label"><span>پیشرفت مطالعه</span><b id="read-percent">۰٪</b></div><div class="progress-track"><span id="read-progress"></span></div><button id="resume" class="text-btn">ادامهٔ آخرین مطالعه ←</button><button class="text-btn mobile-settings" data-settings>تنظیمات مطالعه</button><a class="download-link" href="assets/lecture.pdf" download>↓ دریافت جزوهٔ کامل <span>PDF · ۴۲ صفحه</span></a></div>
+    </aside>
+    <main id="main" tabindex="-1">
+      <section id="home" class="hero">
+        <div class="hero-copy"><span class="eyebrow"><i></i> یک جزوه، راه‌های تازه برای فهمیدن</span><h1>آمار را بخوانید.<br>بعد، <em>ببینید.</em></h1><p>از احتمال تا آزمون فرض؛ همراهِ متن درس، با داده‌ها بازی کنید و ببینید پشت هر فرمول چه اتفاقی می‌افتد.</p><div class="byline"><span>استاد درس<strong>دکتر سکینه دهقان</strong></span><span>گردآورندهٔ جزوه<strong>احسان شهبازی</strong></span></div><div class="hero-actions"><button class="primary" id="start-reading">شروع مطالعه <span>←</span></button><button class="secondary" id="explore-labs">ورود به آزمایشگاه ↗</button></div><div class="hero-meta"><span>۴ فصل درسی</span><span>۹ آزمایشگاه تعاملی</span><span>متن کامل و قابل جست‌وجو</span></div></div>
+        <div class="hero-visual"><div class="figure-label"><span>شکل ۰۱ / توزیع نرمال</span><span class="live-dot">قابل کشف</span></div><svg id="hero-plot" viewBox="0 0 650 285" role="img" aria-label="توزیع نرمال و ناحیهٔ میانی ۹۵ درصد"></svg><div class="hero-equation" dir="ltr">P(−1.96 ≤ Z ≤ 1.96) ≈ 0.95</div><p>هر ناحیه، یک احتمال.<br><span>هر تغییر، فرصتی برای درک بهتر.</span></p></div>
+      </section>
+      <section id="reader-view">
+        <div class="reader-toolbar"><div class="breadcrumb" id="breadcrumb">کتاب / راهنمای مطالعه</div><div class="reader-tools"><button id="bookmark" class="text-btn" aria-pressed="false">☆ نشان‌گذاری</button><span class="toolbar-divider"></span><span id="reading-time">مطالعه</span></div></div>
+        <article id="chapter" class="book-content"><p>در حال آماده‌سازی کتاب…</p></article>
+        <div id="chapter-nav" class="chapter-nav"></div>
+      </section>
+      <section id="labs-view" hidden><div class="page-heading"><span class="eyebrow">مشاهده، تغییر، کشف</span><h1>آزمایشگاه آمار</h1><p>یک مفهوم را انتخاب کنید؛ پارامترها را تغییر دهید و نتیجه را در لحظه ببینید. این آزمایش‌ها برای یادگیری‌اند و داده‌های شبیه‌سازی‌شده دارند.</p></div><div id="lab-index" class="lab-index"></div><div id="standalone-lab"></div></section>
+      <section id="pdf-view" hidden><div class="pdf-header"><div><span class="eyebrow">همان جزوه، همان صفحه‌آرایی</span><h1>نسخهٔ اصلی کتاب</h1></div><a class="secondary" href="assets/lecture.pdf" download>↓ دریافت PDF</a></div><details class="chapter-exports"><summary>↓ دانلود فصل به فصل (PDF و LaTeX)</summary><div id="chapter-export-list"></div></details><div class="pdf-controls"><button id="pdf-prev" class="secondary" aria-label="صفحهٔ قبل">→</button><label>صفحه <input id="pdf-page" type="number" min="1" max="42" value="1" aria-label="شمارهٔ صفحه PDF"> از <span id="pdf-count">۴۲</span></label><button id="pdf-next" class="secondary" aria-label="صفحهٔ بعد">←</button><button id="pdf-zoom-out" class="icon-btn" aria-label="کوچک‌نمایی">−</button><span id="pdf-zoom">۱۰۰٪</span><button id="pdf-zoom-in" class="icon-btn" aria-label="بزرگ‌نمایی">+</button></div><p id="pdf-status" role="status"></p><div id="pdf-container"><canvas dir="ltr" id="pdf-canvas" aria-label="صفحهٔ جزوه"></canvas></div></section>
+      <footer class="footer"><div><b>روش‌های آماری</b><span>متن درس، همراه با تجربهٔ یادگیری</span></div><p>استاد: دکتر سکینه دهقان · گردآورنده: احسان شهبازی</p><a href="assets/lecture.tex" download>دریافت منبع لاتک ↗</a><p class="footer-credit">توسعه داده شده با <span class="credit-heart" role="img" aria-label="عشق">❤️</span> برای آماردان های آینده توسط <a href="https://github.com/EhsanShahbazii" target="_blank" rel="noopener noreferrer">احسان شهبازی</a></p></footer>
+    </main>
+    <aside class="margin-notes" id="margin-notes"><span class="sidebar-caption">در این بخش</span><nav id="on-this-page"></nav><div class="note-card"><span class="note-icon">↗</span><b>فرمول را تجربه کنید</b><p>آزمایشگاه‌های مرتبط میان متن قرار دارند. با تغییر ورودی‌ها، اثر هر پارامتر را کشف کنید.</p><button data-view="labs" class="text-btn">همهٔ آزمایشگاه‌ها ←</button></div><div id="saved-list"></div></aside>
+  </div>
+  <dialog id="search-dialog"><div class="dialog-head"><h2>جست‌وجو در جزوه</h2><button class="icon-btn close-dialog" aria-label="بستن جست‌وجو">×</button></div><input id="search-input" type="search" placeholder="مثلاً: واریانس، ولچ، خطای نوع اول…" aria-label="عبارت جست‌وجو"><div id="search-results" aria-live="polite"></div></dialog>
+  <dialog id="settings-dialog"><div class="dialog-head"><h2>تنظیمات مطالعه</h2><button class="icon-btn close-dialog" aria-label="بستن تنظیمات">×</button></div><label class="setting-row">اندازهٔ متن<input id="font-size" type="range" min="15" max="23" value="17"><output id="font-size-value">۱۷</output></label><label class="setting-row">حالت تیره<input id="dark-mode" type="checkbox" role="switch"></label><p class="muted">تنظیمات، نشان‌ها و محل مطالعه فقط در همین مرورگر ذخیره می‌شوند.</p></dialog>
+  <div id="toast" role="status" class="toast"></div>
+</body></html>
