@@ -5,7 +5,7 @@
     "pages": 1,
     "pdf": "assets/chapters/chapter-0.pdf",
     "tex": "assets/chapters/chapter-0.tex",
-    "pdfBytes": 48780
+    "pdfBytes": 49073
   },
   {
     "id": "chapter-1",
@@ -13,7 +13,7 @@
     "pages": 6,
     "pdf": "assets/chapters/chapter-1.pdf",
     "tex": "assets/chapters/chapter-1.tex",
-    "pdfBytes": 93965
+    "pdfBytes": 94551
   },
   {
     "id": "chapter-2",
@@ -21,7 +21,7 @@
     "pages": 6,
     "pdf": "assets/chapters/chapter-2.pdf",
     "tex": "assets/chapters/chapter-2.tex",
-    "pdfBytes": 97670
+    "pdfBytes": 97762
   },
   {
     "id": "chapter-3",
@@ -29,7 +29,7 @@
     "pages": 13,
     "pdf": "assets/chapters/chapter-3.pdf",
     "tex": "assets/chapters/chapter-3.tex",
-    "pdfBytes": 155628
+    "pdfBytes": 155725
   },
   {
     "id": "chapter-4",
@@ -37,7 +37,7 @@
     "pages": 10,
     "pdf": "assets/chapters/chapter-4.pdf",
     "tex": "assets/chapters/chapter-4.tex",
-    "pdfBytes": 138541
+    "pdfBytes": 138695
   },
   {
     "id": "chapter-5",
@@ -45,6 +45,6 @@
     "pages": 3,
     "pdf": "assets/chapters/chapter-5.pdf",
     "tex": "assets/chapters/chapter-5.tex",
-    "pdfBytes": 76838
+    "pdfBytes": 77072
   }
 ]

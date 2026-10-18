@@ -29,12 +29,12 @@ with tempfile.TemporaryDirectory(prefix='amaar-chapters-') as temp:
     for i, (title, body) in enumerate(parts):
         header = r'\chapter*{'+title+'}' if i == 0 else r'\chapter{'+title+'}'
         credit = (r'\begin{center}{\small\color{muted} استاد درس: دکتر سکینه دهقان'
-                  r'\quad | \quad گردآورندهٔ جزوه: احسان شهبازی}\end{center}'+'\n')
+                  r'\quad | \quad گردآورندگان جزوه: علیرضا جهانبخش و احسان شهبازی}\end{center}'+'\n')
         assert header in body
         body = body.replace(header, header+'\n'+credit, 1)
         counter = r'\appendix' if i == 5 else r'\setcounter{chapter}{'+str(max(0, i-1))+'}'
         document = (preamble+'\n'+r'\hypersetup{pdftitle={'+title+
-                    r'},pdfauthor={دکتر سکینه دهقان؛ احسان شهبازی}}'+'\n'+
+                    r'},pdfauthor={دکتر سکینه دهقان؛ علیرضا جهانبخش و احسان شهبازی}}'+'\n'+
                     r'\begin{document}'+'\n'+counter+'\n'+body+'\n'+r'\end{document}'+'\n')
         filename = f'chapter-{i}'
         tex = OUT / (filename+'.tex')
