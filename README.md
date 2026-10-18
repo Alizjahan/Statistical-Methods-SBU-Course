@@ -13,7 +13,7 @@ A Persian interactive statistics textbook, with visual experiments and downloada
 ![Sections: 39](https://img.shields.io/badge/Book_Sections-39-11685c?style=flat-square)
 ![Static site](https://img.shields.io/badge/Hosting-Static_Site-b18a45?style=flat-square)
 
-[📖 منبع جزوه](dist/assets/lecture.tex) · [📥 PDF کامل](dist/assets/lecture.pdf) · [🚀 راهنمای انتشار](GITHUB_PAGES.md) · [🧪 کنترل کیفیت](QA.md)
+[📖 منبع جزوه](dist/assets/lecture.tex) · [📥 PDF کامل](dist/assets/lecture.pdf)
 
 </div>
 
@@ -94,7 +94,7 @@ npm test
 
 <div dir="rtl">
 
-بررسی‌های خودکار، رندر **۶۲۳ عبارت ریاضی**، مقادیر مرجع توزیع‌های نرمال، کای‌دو، استیودنت و دوجمله‌ای، اتصال **۳۹ بخش، ۵ شکل و ۹ آزمایشگاه**، هماهنگی فایل‌های دانلود با منبع جزوه و درون‌یابی نمودارها را کنترل می‌کنند. جزئیات بررسی‌های دستی در [QA.md](QA.md) آمده است.
+بررسی‌های خودکار، رندر **۶۲۳ عبارت ریاضی**، مقادیر مرجع توزیع‌های نرمال، کای‌دو، استیودنت و دوجمله‌ای، اتصال **۳۹ بخش، ۵ شکل و ۹ آزمایشگاه**، هماهنگی فایل‌های دانلود با منبع جزوه و درون‌یابی نمودارها را کنترل می‌کنند.
 
 </div>
 
@@ -137,7 +137,7 @@ python tools/build_chapter_exports.py
 
 پوشهٔ `dist/` یک سایت استاتیک مستقل است. گردش‌کار [GitHub Pages](.github/workflows/pages.yml) وابستگی‌ها را نصب می‌کند، بررسی‌ها را اجرا می‌کند و همین پوشه را منتشر می‌کند. مسیرهای نسبی و مسیریابی مبتنی بر hash برای آدرس پروژه در GitHub Pages آماده‌اند.
 
-پس از ساخت ریپوی GitHub و ارسال کد، در **Settings → Pages → Source** گزینهٔ **GitHub Actions** را انتخاب کنید و گردش‌کار را اجرا کنید. مراحل کامل در [راهنمای انتشار](GITHUB_PAGES.md) آمده است.
+در تنظیمات ریپوی GitHub، در **Settings → Pages → Source** گزینهٔ **GitHub Actions** را انتخاب کنید و گردش‌کار را اجرا کنید.
 
 ## پشت صحنه
 
@@ -175,7 +175,7 @@ python tools/build_chapter_exports.py
 
 سایت، دادهٔ دانشجو را به سرور ارسال نمی‌کند؛ وضعیت مطالعه و تنظیمات در `localStorage` همان مرورگر ذخیره می‌شود. آزمایشگاه‌ها ابزار آموزشی‌اند و از محاسبات عددی و شبیه‌سازی استفاده می‌کنند.
 
-توضیح تاریخچهٔ واردشدهٔ این ریپو در [Reconstructed history](RECONSTRUCTED_HISTORY.md) و مجوز وابستگی‌های همراه در [پوشهٔ مجوزها](dist/vendor/licenses) قرار دارد.
+مجوز وابستگی‌های همراه در [پوشهٔ مجوزها](dist/vendor/licenses) قرار دارد.
 
 ## همراهی با پروژه
 
