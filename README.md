@@ -66,7 +66,16 @@ A Persian interactive statistics textbook, with visual experiments and downloada
 | فصل سوم · فاصله‌های اطمینان | [دانلود](dist/assets/chapters/chapter-3.pdf) | [منبع](dist/assets/chapters/chapter-3.tex) |
 | فصل چهارم · آزمون فرض | [دانلود](dist/assets/chapters/chapter-4.pdf) | [منبع](dist/assets/chapters/chapter-4.tex) |
 | پیوست | [دانلود](dist/assets/chapters/chapter-5.pdf) | [منبع](dist/assets/chapters/chapter-5.tex) |
-| **جزوهٔ کامل** | **[دانلود PDF](dist/assets/lecture.pdf)** | **[منبع کامل](dist/assets/lecture.tex)** |
+| **جزوهٔ کامل کتاب** | **[دانلود PDF](dist/assets/lecture.pdf)** | **[منبع کامل](dist/assets/lecture.tex)** |
+
+### کلاس‌های حل تمرین (TA Sessions)
+
+| جلسه | عنوان و سرفصل‌ها | PDF | LaTeX |
+|:---|:---|:---:|:---:|
+| **جلسه اول** | برآورد نقطه‌ای، نااریبی، کارایی، سازگاری و ۶ تمرین حل‌شده | **[دانلود PDF (۳۲ صفحه)](dist/assets/ta/session-1.pdf)** | **[منبع لاتک](dist/assets/ta/session-1.tex)** |
+| جلسه دوم | موضوعات و تمرین‌های جلسه دوم | به‌زودی | به‌زودی |
+| جلسه سوم | موضوعات و تمرین‌های جلسه سوم | به‌زودی | به‌زودی |
+| جلسه چهارم | موضوعات و تمرین‌های جلسه چهارم | به‌زودی | به‌زودی |
 
 فایل‌های لاتک فصل‌ها مستقل‌اند و تعریف‌ها و شکل‌های لازم را همراه دارند؛ برای کامپایل آن‌ها از **XeLaTeX** استفاده کنید.
 

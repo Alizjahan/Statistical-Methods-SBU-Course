@@ -11,7 +11,20 @@
   <a class="skip" href="#main">رفتن به محتوای کتاب</a>
   <header class="topbar">
     <a href="#home" class="brand"><span class="brand-symbol" aria-hidden="true">∑</span><span>روش‌های آماری<small>کتابِ تعاملی</small></span></a>
-    <nav aria-label="ناوبری اصلی"><button data-view="read" class="nav-btn active">مطالعهٔ کتاب</button><button data-view="labs" class="nav-btn">آزمایشگاه</button><button data-view="pdf" class="nav-btn">نسخهٔ PDF</button></nav>
+    <nav aria-label="ناوبری اصلی">
+      <button data-view="read" class="nav-btn active">مطالعهٔ کتاب</button>
+      <div class="nav-dropdown-wrap">
+        <button data-view="ta" class="nav-btn nav-btn-ta" aria-haspopup="true" aria-expanded="false">کلاس‌های حل تمرین <span class="nav-caret">▾</span></button>
+        <div class="nav-dropdown-menu" id="ta-dropdown">
+          <a href="#ta-1" data-ta-session="0" class="dropdown-item"><span class="item-tag tag-ready">آماده مطالعه</span><strong>جلسه اول</strong><small>برآورد نقطه‌ای، نااریبی، کارایی، سازگاری</small></a>
+          <a href="#ta-2" data-ta-session="1" class="dropdown-item"><span class="item-tag tag-wait">به‌زودی</span><strong>جلسه دوم</strong><small>به‌زودی پس از تشکیل کلاس</small></a>
+          <a href="#ta-3" data-ta-session="2" class="dropdown-item"><span class="item-tag tag-wait">به‌زودی</span><strong>جلسه سوم</strong><small>به‌زودی پس از تشکیل کلاس</small></a>
+          <a href="#ta-4" data-ta-session="3" class="dropdown-item"><span class="item-tag tag-wait">به‌زودی</span><strong>جلسه چهارم</strong><small>به‌زودی پس از تشکیل کلاس</small></a>
+        </div>
+      </div>
+      <button data-view="labs" class="nav-btn">آزمایشگاه</button>
+      <button data-view="pdf" class="nav-btn">نسخهٔ PDF</button>
+    </nav>
     <div class="header-actions"><button id="search-open" class="icon-btn" aria-label="جست‌وجو در کتاب">⌕</button><button id="settings-open" class="icon-btn" aria-label="تنظیمات مطالعه">آ<span class="small-a">آ</span></button><button id="menu" class="icon-btn mobile" aria-label="نمایش فهرست" aria-expanded="false">☰</button></div>
   </header>
   <div class="layout">
