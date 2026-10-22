@@ -39,9 +39,7 @@ assert.equal(taSessions.length,4);
 assert.equal(taSessions[0].sections.length,6);
 const taPdf=fs.readFileSync(new URL('../dist/'+taSessions[0].pdf,import.meta.url));
 assert.equal(taPdf.subarray(0,5).toString(),'%PDF-');
-const taTex=fs.readFileSync(new URL('../dist/'+taSessions[0].tex,import.meta.url),'utf8');
-assert.ok(taTex.includes('علیرضا جهانبخش'));
-console.log('PASS: 4 TA problem-solving sessions verified, session 1 complete with 6 sections, PDF and LaTeX.');
+console.log('PASS: 4 TA problem-solving sessions verified, session 1 complete with 6 sections and PDF.');
 
 const {interpolateValue}=await import('../dist/motion.js');
 const morph=interpolateValue('M0,0L10,20','M10,20L30,40');

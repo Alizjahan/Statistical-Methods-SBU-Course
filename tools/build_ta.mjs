@@ -562,7 +562,6 @@ const taSessions = [
     subtitle: 'مرور توزیع‌ها، امید ریاضی، مفهوم برآورد نقطه‌ای، نااریبی، کارایی، سازگاری و ۶ تمرین حل‌شده',
     description: 'درس‌نامهٔ جامع، مثال‌های کلاسی و تمرین‌های حل‌شده با بیان گام‌به‌گام · مدرس حل تمرین: علیرضا جهانبخش',
     pdf: 'assets/ta/session-1.pdf',
-    tex: 'assets/ta/session-1.tex',
     pages: 32,
     intro: `
 <div class="ta-session-hero">

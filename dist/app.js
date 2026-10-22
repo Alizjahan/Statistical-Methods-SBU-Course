@@ -82,8 +82,8 @@ function renderTASession(index){
  if(!s)return;
  const kicker='کلاس‌های حل تمرین · '+s.shortTitle;
  let html=`<div class="chapter-heading"><span class="chapter-kicker">${kicker}</span><h1>${esc(s.title)}</h1><div class="chapter-description">${esc(s.description)}</div>`;
- if(s.pdf&&s.tex){
-  html+=`<div class="chapter-downloads"><span>دریافت این جلسه</span><a href="${s.pdf}" download="روش‌های آماری - حل تمرین ${esc(s.shortTitle)}.pdf">↓ PDF <small>${fa(s.pages)} صفحه</small></a><a href="${s.tex}" download="روش‌های آماری - حل تمرین ${esc(s.shortTitle)}.tex">↓ فایل LaTeX <small>کامل و قابل‌ویرایش</small></a></div>`;
+ if(s.pdf){
+  html+=`<div class="chapter-downloads"><span>دریافت این جلسه</span><a href="${s.pdf}" download="روش‌های آماری - حل تمرین ${esc(s.shortTitle)}.pdf">↓ دریافت جزوه (PDF) <small>${fa(s.pages)} صفحه</small></a></div>`;
  }
  html+=`</div><div class="chapter-intro" data-read-id="${s.id}">${s.intro}</div>`;
  html+=s.sections.map(sec=>`<section id="${sec.id}" data-read-id="${sec.id}"><h2>${esc(sec.title)}</h2>${sec.html}</section>`).join('');
