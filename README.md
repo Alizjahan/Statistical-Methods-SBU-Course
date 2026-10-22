@@ -1,6 +1,7 @@
 <div align="center">
-![روش‌های آماری — کتاب تعاملی]docs/assets/header4.jpg).
-# روش‌های آماری | Statistical Methods
+![روش‌های آماری — کتاب تعاملی](docs/assets/header4.jpg)
+  
+  # روش‌های آماری | Statistical Methods
 
 **از فرمول به شهود؛ آمار را بخوانید، ببینید و تجربه کنید.**
 
