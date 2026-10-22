@@ -23,9 +23,9 @@ A Persian interactive statistics textbook, with visual experiments and downloada
 
 این پروژه، جزوهٔ درس **روش‌های آماری دکتر سکینه دهقان** را به یک کتاب تعاملی فارسی تبدیل می‌کند: متن و فرمول‌ها را بخوانید، پارامترهای آزمایش‌ها را تغییر دهید، رفتار نمودارها را ببینید و نسخهٔ PDF یا لاتک هر فصل را همراه خود داشته باشید.
 
-گردآورندگان جزوه: **علیرضا جهانبخش و [احسان شهبازی](https://github.com/EhsanShahbazii)**.
+گردآورندگان جزوه: **[علیرضا جهانبخش](https://github.com/Alizjahan) و [احسان شهبازی](https://github.com/EhsanShahbazii)**.
 
-توسعهٔ وبسایت: **[احسان شهبازی](https://github.com/EhsanShahbazii)**.
+توسعهٔ وبسایت: **[احسان شهبازی](https://github.com/EhsanShahbazii) و [علیرضا جهانبخش](https://github.com/Alizjahan)**.
 
 ## چه چیزی اینجا پیدا می‌کنید؟
 
@@ -198,7 +198,7 @@ python tools/build_chapter_exports.py
 
 <div align="center">
 
-**توسعه داده شده با ❤️ برای آماردان‌های آینده توسط [احسان شهبازی](https://github.com/EhsanShahbazii)**
+**توسعه داده شده با ❤️ برای آماردان‌های آینده توسط [احسان شهبازی](https://github.com/EhsanShahbazii) و [علیرضا جهانبخش](https://github.com/Alizjahan)**
 
 با سپاس از **دکتر سکینه دهقان**، استاد درس روش‌های آماری.
 
