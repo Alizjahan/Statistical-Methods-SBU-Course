@@ -1,6 +1,6 @@
 <div align="center">
 
-![روش‌های آماری — کتاب تعاملی](docs/assets/statistical-methods-banner.png)
+![روش‌های آماری — کتاب تعاملی](docs/assets/header4.jpg)
 
 # روش‌های آماری | Statistical Methods
 
