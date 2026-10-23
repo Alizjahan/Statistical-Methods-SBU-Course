@@ -288,9 +288,20 @@ ${M('\\hat{\\sigma}^2 = \\frac{1}{n} \\sum_{i=1}^n (X_i - \\bar{X})^2')}
 ${M('\\Var(\\bar{X}) = \\Var\\!\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right) = \\frac{1}{n^2}\\sum_{i=1}^n \\Var(X_i) = \\frac{1}{n^2}(n\\sigma^2) = \\frac{\\sigma^2}{n}')}
 در نتیجه:
 ${M('\\E(\\bar{X}^2) = \\Var(\\bar{X}) + [\\E(\\bar{X})]^2 = \\frac{\\sigma^2}{n} + \\mu^2')}</li>
-<li><strong>کوواریانس بین مشاهدهٔ ${m('i')}ام و میانگین نمونه:</strong>
-${M('\\Cov(X_i, \\bar{X}) = \\Cov\\!\\left(X_i, \\frac{1}{n}\\sum_{j=1}^n X_j\\right) = \\frac{1}{n}\\sum_{j=1}^n \\Cov(X_i, X_j) = \\frac{1}{n}\\Var(X_i) = \\frac{\\sigma^2}{n}')}
-در نتیجه:
+<li><strong>کوواریانس بین مشاهدهٔ ${m('i')}ام و میانگین نمونه (${m('\\Cov(X_i, \\bar{X})')}):</strong>
+${M('\\begin{aligned} \\Cov(X_i, \\bar{X}) &= \\Cov\\!\\left(X_i, \\frac{1}{n}\\sum_{j=1}^n X_j\\right) \\\\[6pt] &= \\frac{1}{n} \\sum_{j=1}^n \\Cov(X_i, X_j) \\\\[6pt] &= \\frac{1}{n} \\Big[ \\Cov(X_i, X_i) + \\sum_{j \\neq i} \\Cov(X_i, X_j) \\Big] \\\\[6pt] &= \\frac{1}{n} \\Big[ \\Var(X_i) + 0 \\Big] = \\frac{1}{n}\\Var(X_i) = \\frac{\\sigma^2}{n} \\end{aligned}')}
+<p><strong>ضریب ${m('\\frac{1}{n}')} از کجا آمده و این رابطه چگونه به دست آمده است؟</strong></p>
+<ul>
+<li><strong>منشأ ضریب ${m('\\frac{1}{n}')}:</strong> در تعریف میانگین نمونه داریم ${m('\\bar{X} = \\frac{1}{n}\\sum_{j=1}^n X_j')}. طبق خاصیت دوخطی بودن کوواریانس (Bilinearity)، ضریب ثابت ${m('\\frac{1}{n}')} مستقیماً از مؤلفهٔ دوم کوواریانس بیرون می‌آید: ${m('\\Cov(X, cY) = c\\,\\Cov(X, Y)')} و عملگر سیگما نیز پخش می‌شود.</li>
+<li><strong>چرا از کل سیگما فقط یک جمله باقی ماند؟</strong> مجموع ${m('\\sum_{j=1}^n \\Cov(X_i, X_j)')} شامل ${m('n')} جمله است:
+<ul>
+<li>اگر ${m('j = i')} باشد، کوواریانس هر متغیر با خودش برابر واریانس آن است: ${m('\\Cov(X_i, X_i) = \\Var(X_i) = \\sigma^2')}.</li>
+<li>اگر ${m('j \\neq i')} باشد (تعداد ${m('n-1')} جملهٔ دیگر)، چون داده‌های نمونه تصادفی از هم مستقل هستند (${m('X_i \\iid')})، کوواریانس هر دو مشاهدهٔ متمایز صفر است: ${m('\\Cov(X_i, X_j) = 0')}.</li>
+</ul>
+بنابراین تمام ${m('n-1')} جملهٔ دیگر صفر می‌شوند و فقط همان یک جملهٔ ${m('\\Var(X_i) = \\sigma^2')} باقی می‌ماند که با ضرب در ضریب ${m('\\frac{1}{n}')}، حاصل دقیقاً ${m('\\frac{1}{n}\\Var(X_i) = \\frac{\\sigma^2}{n}')} می‌شود.
+</li>
+</ul>
+در نتیجه برای امید ریاضی حاصل‌ضرب ${m('X_i \\bar{X}')} خواهیم داشت:
 ${M('\\E(X_i \\bar{X}) = \\Cov(X_i, \\bar{X}) + \\E(X_i)\\E(\\bar{X}) = \\frac{\\sigma^2}{n} + \\mu^2')}</li>
 </ul>
 </blockquote>
